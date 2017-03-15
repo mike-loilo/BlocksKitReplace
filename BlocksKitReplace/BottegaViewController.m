@@ -22,6 +22,7 @@
         
         [self helloWorld];
     }];
+//    self.navigationItem.rightBarButtonItem = [UIBarButtonItem.alloc initWithTitle:@"NULL" style:UIBarButtonItemStylePlain handler:NULL];
 }
 
 - (void)didReceiveMemoryWarning {
