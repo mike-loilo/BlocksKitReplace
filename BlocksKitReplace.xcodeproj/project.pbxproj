@@ -14,6 +14,7 @@
 		2791FFA31E79133600635513 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2791FFA21E79133600635513 /* Assets.xcassets */; };
 		2791FFA61E79133600635513 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2791FFA41E79133600635513 /* LaunchScreen.storyboard */; };
 		2791FFAF1E7915CD00635513 /* BottegaViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2791FFAE1E7915CD00635513 /* BottegaViewController.m */; };
+		2791FFB31E791A1700635513 /* UIBarButtonItem+Util.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2791FFB21E791A1700635513 /* UIBarButtonItem+Util.swift */; };
 		92A77FE11BA4834CC3EAD284 /* libPods-BlocksKitReplace.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0E963CC7F05C23DFACA6381F /* libPods-BlocksKitReplace.a */; };
 /* End PBXBuildFile section */
 
@@ -31,6 +32,8 @@
 		2791FFA71E79133600635513 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2791FFAD1E7915CD00635513 /* BottegaViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BottegaViewController.h; sourceTree = "<group>"; };
 		2791FFAE1E7915CD00635513 /* BottegaViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BottegaViewController.m; sourceTree = "<group>"; };
+		2791FFB11E791A1600635513 /* BlocksKitReplace-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BlocksKitReplace-Bridging-Header.h"; sourceTree = "<group>"; };
+		2791FFB21E791A1700635513 /* UIBarButtonItem+Util.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "UIBarButtonItem+Util.swift"; path = "Replaced/UIBarButtonItem+Util.swift"; sourceTree = "<group>"; };
 		A06504C8746062E3D6FDA698 /* Pods-BlocksKitReplace.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BlocksKitReplace.release.xcconfig"; path = "Pods/Target Support Files/Pods-BlocksKitReplace/Pods-BlocksKitReplace.release.xcconfig"; sourceTree = "<group>"; };
 		D57F8C3885ED462A85160FE1 /* Pods-BlocksKitReplace.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BlocksKitReplace.debug.xcconfig"; path = "Pods/Target Support Files/Pods-BlocksKitReplace/Pods-BlocksKitReplace.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -68,6 +71,7 @@
 		2791FF951E79133600635513 /* BlocksKitReplace */ = {
 			isa = PBXGroup;
 			children = (
+				2791FFB01E7919EF00635513 /* Replaced */,
 				2791FF991E79133600635513 /* AppDelegate.h */,
 				2791FF9A1E79133600635513 /* AppDelegate.m */,
 				2791FF9C1E79133600635513 /* ViewController.h */,
@@ -89,6 +93,15 @@
 				2791FF971E79133600635513 /* main.m */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		2791FFB01E7919EF00635513 /* Replaced */ = {
+			isa = PBXGroup;
+			children = (
+				2791FFB21E791A1700635513 /* UIBarButtonItem+Util.swift */,
+				2791FFB11E791A1600635513 /* BlocksKitReplace-Bridging-Header.h */,
+			);
+			name = Replaced;
 			sourceTree = "<group>";
 		};
 		DFF6EE8EAB0D3E6B43555AE7 /* Frameworks */ = {
@@ -143,6 +156,7 @@
 					2791FF921E79133600635513 = {
 						CreatedOnToolsVersion = 8.2.1;
 						DevelopmentTeam = HTPD358RST;
+						LastSwiftMigration = 0820;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -233,6 +247,7 @@
 			files = (
 				2791FF9E1E79133600635513 /* ViewController.m in Sources */,
 				2791FF9B1E79133600635513 /* AppDelegate.m in Sources */,
+				2791FFB31E791A1700635513 /* UIBarButtonItem+Util.swift in Sources */,
 				2791FF981E79133600635513 /* main.m in Sources */,
 				2791FFAF1E7915CD00635513 /* BottegaViewController.m in Sources */,
 			);
@@ -355,11 +370,15 @@
 			baseConfigurationReference = D57F8C3885ED462A85160FE1 /* Pods-BlocksKitReplace.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				DEVELOPMENT_TEAM = HTPD358RST;
 				INFOPLIST_FILE = BlocksKitReplace/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = mike.BlocksKitReplace;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "BlocksKitReplace/BlocksKitReplace-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
 		};
@@ -368,11 +387,14 @@
 			baseConfigurationReference = A06504C8746062E3D6FDA698 /* Pods-BlocksKitReplace.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				DEVELOPMENT_TEAM = HTPD358RST;
 				INFOPLIST_FILE = BlocksKitReplace/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = mike.BlocksKitReplace;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "BlocksKitReplace/BlocksKitReplace-Bridging-Header.h";
+				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
 		};
@@ -395,6 +417,7 @@
 				2791FFAC1E79133600635513 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

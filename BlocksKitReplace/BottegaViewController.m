@@ -7,7 +7,7 @@
 //
 
 #import "BottegaViewController.h"
-#import <UIBarButtonItem+BlocksKit.h>
+#import "BlocksKitReplace-Swift.h"
 #import <libextobjc/EXTScope.h>
 
 @implementation BottegaViewController
@@ -16,7 +16,7 @@
     [super viewDidLoad];
     
     @weakify(self)
-    self.navigationItem.rightBarButtonItem = [UIBarButtonItem.alloc bk_initWithTitle:@"TEST" style:UIBarButtonItemStylePlain handler:^(id sender) {
+    self.navigationItem.rightBarButtonItem = [UIBarButtonItem.alloc initWithTitle:@"TEST" style:UIBarButtonItemStylePlain handler:^(UIBarButtonItem * _Nonnull sender) {
         @strongify(self)
         if (!self) return;
         
