@@ -13,12 +13,27 @@ typealias UIBarButtonItemHandler = @convention(block) (_ sender: UIBarButtonItem
 
 extension UIBarButtonItem {
     
-    public convenience init(title: String?, style: UIBarButtonItemStyle, handler: @escaping (UIBarButtonItem) -> ()) {
-        self.init()
-        self.title = title
-        self.style = style
+    public convenience init(image: UIImage?, style: UIBarButtonItemStyle, handler: @escaping (UIBarButtonItem) -> ()) {
+        self.init(image: image, style: style, target: nil, action: #selector(UIBarButtonItem.tapAction(_:)))
         self.target = self
-        self.action = #selector(UIBarButtonItem.tapAction(_:))
+        self.setHandler(handler: handler)
+    }
+    
+    public convenience init(image: UIImage?, landscapeImagePhone: UIImage?, style: UIBarButtonItemStyle, handler: @escaping (UIBarButtonItem) -> ()) {
+        self.init(image: image, landscapeImagePhone: landscapeImagePhone, style: style, target: nil, action: #selector(UIBarButtonItem.tapAction(_:)))
+        self.target = self
+        self.setHandler(handler: handler)
+    }
+    
+    public convenience init(barButtonSystemItem: UIBarButtonSystemItem, handler: @escaping (UIBarButtonItem) -> ()) {
+        self.init(barButtonSystemItem: barButtonSystemItem, target: nil, action: #selector(UIBarButtonItem.tapAction(_:)))
+        self.target = self
+        self.setHandler(handler: handler)
+    }
+    
+    public convenience init(title: String?, style: UIBarButtonItemStyle, handler: @escaping (UIBarButtonItem) -> ()) {
+        self.init(title: title, style: style, target: nil, action: #selector(UIBarButtonItem.tapAction(_:)))
+        self.target = self
         self.setHandler(handler: handler)
     }
     
