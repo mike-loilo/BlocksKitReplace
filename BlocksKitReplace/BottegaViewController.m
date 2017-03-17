@@ -23,6 +23,15 @@
         [self helloWorld];
     }];
 //    self.navigationItem.rightBarButtonItem = [UIBarButtonItem.alloc initWithTitle:@"NULL" style:UIBarButtonItemStylePlain handler:NULL];
+    
+    NSArray *array = @[@"a", @"b", @"c"];
+    array = [array lbk_mapWithBlock:^id(id obj) {
+        if ([obj isEqualToString:@"b"])
+            return @"d";
+        else
+            return obj;
+    }];
+    NSLog(@"ARRAY : %@", array);
 }
 
 - (void)didReceiveMemoryWarning {

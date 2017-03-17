@@ -15,6 +15,7 @@
 		2791FFA61E79133600635513 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2791FFA41E79133600635513 /* LaunchScreen.storyboard */; };
 		2791FFAF1E7915CD00635513 /* BottegaViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2791FFAE1E7915CD00635513 /* BottegaViewController.m */; };
 		2791FFB31E791A1700635513 /* UIBarButtonItem+Util.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2791FFB21E791A1700635513 /* UIBarButtonItem+Util.swift */; };
+		2791FFB51E79452700635513 /* NSArray+Util.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2791FFB41E79452700635513 /* NSArray+Util.swift */; };
 		92A77FE11BA4834CC3EAD284 /* libPods-BlocksKitReplace.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0E963CC7F05C23DFACA6381F /* libPods-BlocksKitReplace.a */; };
 /* End PBXBuildFile section */
 
@@ -34,6 +35,7 @@
 		2791FFAE1E7915CD00635513 /* BottegaViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BottegaViewController.m; sourceTree = "<group>"; };
 		2791FFB11E791A1600635513 /* BlocksKitReplace-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BlocksKitReplace-Bridging-Header.h"; sourceTree = "<group>"; };
 		2791FFB21E791A1700635513 /* UIBarButtonItem+Util.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "UIBarButtonItem+Util.swift"; path = "Replaced/UIBarButtonItem+Util.swift"; sourceTree = "<group>"; };
+		2791FFB41E79452700635513 /* NSArray+Util.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "NSArray+Util.swift"; path = "Replaced/NSArray+Util.swift"; sourceTree = "<group>"; };
 		A06504C8746062E3D6FDA698 /* Pods-BlocksKitReplace.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BlocksKitReplace.release.xcconfig"; path = "Pods/Target Support Files/Pods-BlocksKitReplace/Pods-BlocksKitReplace.release.xcconfig"; sourceTree = "<group>"; };
 		D57F8C3885ED462A85160FE1 /* Pods-BlocksKitReplace.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BlocksKitReplace.debug.xcconfig"; path = "Pods/Target Support Files/Pods-BlocksKitReplace/Pods-BlocksKitReplace.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -71,6 +73,7 @@
 		2791FF951E79133600635513 /* BlocksKitReplace */ = {
 			isa = PBXGroup;
 			children = (
+				2791FFB11E791A1600635513 /* BlocksKitReplace-Bridging-Header.h */,
 				2791FFB01E7919EF00635513 /* Replaced */,
 				2791FF991E79133600635513 /* AppDelegate.h */,
 				2791FF9A1E79133600635513 /* AppDelegate.m */,
@@ -99,7 +102,7 @@
 			isa = PBXGroup;
 			children = (
 				2791FFB21E791A1700635513 /* UIBarButtonItem+Util.swift */,
-				2791FFB11E791A1600635513 /* BlocksKitReplace-Bridging-Header.h */,
+				2791FFB41E79452700635513 /* NSArray+Util.swift */,
 			);
 			name = Replaced;
 			sourceTree = "<group>";
@@ -249,6 +252,7 @@
 				2791FF9B1E79133600635513 /* AppDelegate.m in Sources */,
 				2791FFB31E791A1700635513 /* UIBarButtonItem+Util.swift in Sources */,
 				2791FF981E79133600635513 /* main.m in Sources */,
+				2791FFB51E79452700635513 /* NSArray+Util.swift in Sources */,
 				2791FFAF1E7915CD00635513 /* BottegaViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
