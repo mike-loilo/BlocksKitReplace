@@ -47,19 +47,29 @@
         self.view.backgroundColor = UIColor.blueColor;
     } delay:5.0]];
     
-    NSTimer *const timer = [NSTimer lbk_timerWithTimeInterval:1 block:^(NSTimer *timer) {
-        @strongify(self)
-        if (!self) return;
-        
-        [self helloWorld];
-    } repeats:YES];
-    [NSRunLoop.mainRunLoop addTimer:timer forMode:NSDefaultRunLoopMode];
+//    NSTimer *const timer = [NSTimer lbk_timerWithTimeInterval:1 block:^(NSTimer *timer) {
+//        @strongify(self)
+//        if (!self) return;
+//        
+//        [self helloWorld];
+//    } repeats:YES];
+//    [NSRunLoop.mainRunLoop addTimer:timer forMode:NSDefaultRunLoopMode];
 //    [NSTimer lbk_scheduledTimerWithTimeInterval:1 block:^(NSTimer *timer) {
 //        @strongify(self)
 //        if (!self) return;
 //        
 //        [self helloWorld];
 //    } repeats:YES];
+    
+    UIButton *const button = [UIButton buttonWithType:UIButtonTypeContactAdd];
+    [button lbk_setEventWithHandler:^(id sender) {
+        @strongify(self)
+        if (!self) return;
+        
+        [self helloWorld];
+    } controlEvents:UIControlEventTouchUpInside];
+    button.center = self.view.center;
+    [self.view addSubview:button];
 }
 
 - (void)didReceiveMemoryWarning {
