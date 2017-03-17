@@ -67,6 +67,14 @@
         if (!self) return;
         
         [self helloWorld];
+        [UIAlertView lbk_showWithPresenter:self
+                                     title:@"Title"
+                                   message:@"Message"
+                         cancelButtonTitle:@"Cancel"
+                         otherButtonTitles:@[@"1", @"2", @"3"]
+                                  callback:^(id sender, NSInteger buttonIndex) {
+                                      NSLog(@"##### %ld", buttonIndex);
+                                  }];
     } forControlEvents:UIControlEventTouchUpInside];
     button.center = self.view.center;
     [self.view addSubview:button];
