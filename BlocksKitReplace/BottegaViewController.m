@@ -67,7 +67,7 @@
         if (!self) return;
         
         [self helloWorld];
-    } controlEvents:UIControlEventTouchUpInside];
+    } forControlEvents:UIControlEventTouchUpInside];
     button.center = self.view.center;
     [self.view addSubview:button];
 }
