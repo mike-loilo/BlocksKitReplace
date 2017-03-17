@@ -13,7 +13,7 @@ typealias UIBarButtonItemHandler = @convention(block) (_ sender: UIBarButtonItem
 
 extension UIBarButtonItem {
     
-    fileprivate var handler: UIBarButtonItemHandler? {
+    fileprivate var lbk_handler: UIBarButtonItemHandler? {
         get {
             let object: AnyObject? = objc_getAssociatedObject(self, &UIBarButtonItemHandlerKey) as AnyObject?
             if (nil == object) {
@@ -37,32 +37,32 @@ extension UIBarButtonItem {
     }
     
     public convenience init(image: UIImage?, style: UIBarButtonItemStyle, handler: ((UIBarButtonItem) -> ())?) {
-        self.init(image: image, style: style, target: nil, action: #selector(UIBarButtonItem.tapAction(_:)))
+        self.init(image: image, style: style, target: nil, action: #selector(UIBarButtonItem.lbk_tapAction(_:)))
         self.target = self
-        self.handler = handler
+        self.lbk_handler = handler
     }
     
     public convenience init(image: UIImage?, landscapeImagePhone: UIImage?, style: UIBarButtonItemStyle, handler: ((UIBarButtonItem) -> ())?) {
-        self.init(image: image, landscapeImagePhone: landscapeImagePhone, style: style, target: nil, action: #selector(UIBarButtonItem.tapAction(_:)))
+        self.init(image: image, landscapeImagePhone: landscapeImagePhone, style: style, target: nil, action: #selector(UIBarButtonItem.lbk_tapAction(_:)))
         self.target = self
-        self.handler = handler
+        self.lbk_handler = handler
     }
     
     public convenience init(barButtonSystemItem: UIBarButtonSystemItem, handler: ((UIBarButtonItem) -> ())?) {
-        self.init(barButtonSystemItem: barButtonSystemItem, target: nil, action: #selector(UIBarButtonItem.tapAction(_:)))
+        self.init(barButtonSystemItem: barButtonSystemItem, target: nil, action: #selector(UIBarButtonItem.lbk_tapAction(_:)))
         self.target = self
-        self.handler = handler
+        self.lbk_handler = handler
     }
     
     public convenience init(title: String?, style: UIBarButtonItemStyle, handler: ((UIBarButtonItem) -> ())?) {
-        self.init(title: title, style: style, target: nil, action: #selector(UIBarButtonItem.tapAction(_:)))
+        self.init(title: title, style: style, target: nil, action: #selector(UIBarButtonItem.lbk_tapAction(_:)))
         self.target = self
-        self.handler = handler
+        self.lbk_handler = handler
     }
     
-    func tapAction(_ sender: AnyObject) {
-        if nil != self.handler {
-            self.handler!(self)
+    func lbk_tapAction(_ sender: AnyObject) {
+        if nil != self.lbk_handler {
+            self.lbk_handler!(self)
         }
     }
 }

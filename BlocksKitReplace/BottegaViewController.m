@@ -8,6 +8,7 @@
 
 #import "BottegaViewController.h"
 #import "BlocksKitReplace-Swift.h"
+//#import <UIGestureRecognizer+BlocksKit.h>
 #import <libextobjc/EXTScope.h>
 
 @implementation BottegaViewController
@@ -24,7 +25,7 @@
     }];
 //    self.navigationItem.rightBarButtonItem = [UIBarButtonItem.alloc initWithTitle:@"NULL" style:UIBarButtonItemStylePlain handler:NULL];
     
-    NSArray *array = @[@"a", @"b", @"c"];
+//    NSArray *array = @[@"a", @"b", @"c"];
 //    array = [array lbk_mapWithBlock:^id(id obj) {
 //        if ([obj isEqualToString:@"b"])
 //            return @"d";
@@ -38,7 +39,20 @@
 //        return [obj isEqualToString:@"c"];
 //    }];
 //    NSLog(@"ARRAY : %@", array);
-    NSLog(@"ARRAY ANY : %@", [array lbk_anyWithBlock:^BOOL(id obj) { return [obj isEqualToString:@"a"]; }] ? @"YES" : @"NO");
+//    NSLog(@"ARRAY ANY : %@", [array lbk_anyWithBlock:^BOOL(id obj) { return [obj isEqualToString:@"a"]; }] ? @"YES" : @"NO");
+    
+//    [self.view addGestureRecognizer:[UIPanGestureRecognizer.alloc bk_initWithHandler:^(UIGestureRecognizer *sender, UIGestureRecognizerState state, CGPoint location) {
+//        @strongify(self)
+//        if (!self) return;
+//        
+//        [self helloWorld];
+//    }]];
+    [self.view addGestureRecognizer:[UIPanGestureRecognizer.alloc initWithHandler:^(UIGestureRecognizer *sender, UIGestureRecognizerState state, CGPoint location) {
+        @strongify(self)
+        if (!self) return;
+        
+        self.view.backgroundColor = UIColor.blueColor;
+    } delay:5.0]];
 }
 
 - (void)didReceiveMemoryWarning {
