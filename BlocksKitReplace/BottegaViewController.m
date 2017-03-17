@@ -8,7 +8,6 @@
 
 #import "BottegaViewController.h"
 #import "BlocksKitReplace-Swift.h"
-//#import <UIGestureRecognizer+BlocksKit.h>
 #import <libextobjc/EXTScope.h>
 
 @implementation BottegaViewController
@@ -41,18 +40,26 @@
 //    NSLog(@"ARRAY : %@", array);
 //    NSLog(@"ARRAY ANY : %@", [array lbk_anyWithBlock:^BOOL(id obj) { return [obj isEqualToString:@"a"]; }] ? @"YES" : @"NO");
     
-//    [self.view addGestureRecognizer:[UIPanGestureRecognizer.alloc bk_initWithHandler:^(UIGestureRecognizer *sender, UIGestureRecognizerState state, CGPoint location) {
-//        @strongify(self)
-//        if (!self) return;
-//        
-//        [self helloWorld];
-//    }]];
     [self.view addGestureRecognizer:[UIPanGestureRecognizer.alloc initWithHandler:^(UIGestureRecognizer *sender, UIGestureRecognizerState state, CGPoint location) {
         @strongify(self)
         if (!self) return;
         
         self.view.backgroundColor = UIColor.blueColor;
     } delay:5.0]];
+    
+    NSTimer *const timer = [NSTimer lbk_timerWithTimeInterval:1 block:^(NSTimer *timer) {
+        @strongify(self)
+        if (!self) return;
+        
+        [self helloWorld];
+    } repeats:YES];
+    [NSRunLoop.mainRunLoop addTimer:timer forMode:NSDefaultRunLoopMode];
+//    [NSTimer lbk_scheduledTimerWithTimeInterval:1 block:^(NSTimer *timer) {
+//        @strongify(self)
+//        if (!self) return;
+//        
+//        [self helloWorld];
+//    } repeats:YES];
 }
 
 - (void)didReceiveMemoryWarning {

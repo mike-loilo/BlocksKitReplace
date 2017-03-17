@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		278D52951E7B767300E4D93F /* UIGestureRecognizer+Util.swift in Sources */ = {isa = PBXBuildFile; fileRef = 278D52941E7B767300E4D93F /* UIGestureRecognizer+Util.swift */; };
+		278D52991E7B8F5800E4D93F /* NSTimer+Util.swift in Sources */ = {isa = PBXBuildFile; fileRef = 278D52981E7B8F5800E4D93F /* NSTimer+Util.swift */; };
 		2791FF981E79133600635513 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 2791FF971E79133600635513 /* main.m */; };
 		2791FF9B1E79133600635513 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 2791FF9A1E79133600635513 /* AppDelegate.m */; };
 		2791FF9E1E79133600635513 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2791FF9D1E79133600635513 /* ViewController.m */; };
@@ -23,6 +24,7 @@
 /* Begin PBXFileReference section */
 		0E963CC7F05C23DFACA6381F /* libPods-BlocksKitReplace.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-BlocksKitReplace.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		278D52941E7B767300E4D93F /* UIGestureRecognizer+Util.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "UIGestureRecognizer+Util.swift"; path = "Replaced/UIGestureRecognizer+Util.swift"; sourceTree = "<group>"; };
+		278D52981E7B8F5800E4D93F /* NSTimer+Util.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "NSTimer+Util.swift"; path = "Replaced/NSTimer+Util.swift"; sourceTree = "<group>"; };
 		2791FF931E79133600635513 /* BlocksKitReplace.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BlocksKitReplace.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2791FF971E79133600635513 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		2791FF991E79133600635513 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -106,6 +108,7 @@
 				2791FFB21E791A1700635513 /* UIBarButtonItem+Util.swift */,
 				2791FFB41E79452700635513 /* NSArray+Util.swift */,
 				278D52941E7B767300E4D93F /* UIGestureRecognizer+Util.swift */,
+				278D52981E7B8F5800E4D93F /* NSTimer+Util.swift */,
 			);
 			name = Replaced;
 			sourceTree = "<group>";
@@ -251,6 +254,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				278D52991E7B8F5800E4D93F /* NSTimer+Util.swift in Sources */,
 				2791FF9E1E79133600635513 /* ViewController.m in Sources */,
 				2791FF9B1E79133600635513 /* AppDelegate.m in Sources */,
 				2791FFB31E791A1700635513 /* UIBarButtonItem+Util.swift in Sources */,
