@@ -38,15 +38,20 @@ extension UIGestureRecognizer {
         }
     }
     
-    public convenience init(handler: ((UIGestureRecognizer, UIGestureRecognizerState, CGPoint) -> ())?, delay: TimeInterval) {
-        self.init()
-        self.addTarget(self, action: #selector(UIGestureRecognizer.lbk_handleAction(_:)))
-        self.lbk_handler = handler
-        self.lbk_handlerDelay = delay
+    public class func lbk_recognizer(handler: ((UIGestureRecognizer, UIGestureRecognizerState, CGPoint) -> ())?, delay: TimeInterval) -> AnyObject {
+        let recognizer = self.init()
+        recognizer.addTarget(recognizer, action: #selector(UIGestureRecognizer.lbk_handleAction(_:)))
+        recognizer.lbk_handler = handler
+        recognizer.lbk_handlerDelay = delay
+        return recognizer
     }
     
-    public convenience init(handler: ((UIGestureRecognizer, UIGestureRecognizerState, CGPoint) -> ())?) {
-        self.init(handler: handler, delay: 0)
+    public class func lbk_recognizer(handler: ((UIGestureRecognizer, UIGestureRecognizerState, CGPoint) -> ())?) -> AnyObject {
+        let recognizer = self.init()
+        recognizer.addTarget(recognizer, action: #selector(UIGestureRecognizer.lbk_handleAction(_:)))
+        recognizer.lbk_handler = handler
+        recognizer.lbk_handlerDelay = 0
+        return recognizer
     }
     
     func lbk_handleAction(_ recognizer: UIGestureRecognizer) {

@@ -40,7 +40,7 @@
 //    NSLog(@"ARRAY : %@", array);
 //    NSLog(@"ARRAY ANY : %@", [array lbk_anyWithBlock:^BOOL(id obj) { return [obj isEqualToString:@"a"]; }] ? @"YES" : @"NO");
     
-    [self.view addGestureRecognizer:[UIPanGestureRecognizer.alloc initWithHandler:^(UIGestureRecognizer *sender, UIGestureRecognizerState state, CGPoint location) {
+    [self.view addGestureRecognizer:[UIPanGestureRecognizer lbk_recognizerWithHandler:^(UIGestureRecognizer *sender, UIGestureRecognizerState state, CGPoint location) {
         @strongify(self)
         if (!self) return;
         
