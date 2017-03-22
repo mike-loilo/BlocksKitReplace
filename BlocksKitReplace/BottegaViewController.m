@@ -66,15 +66,70 @@
         @strongify(self)
         if (!self) return;
         
-        [self helloWorld];
         [UIAlertView lbk_showWithPresenter:self
                                      title:@"Title"
                                    message:@"Message"
                          cancelButtonTitle:@"Cancel"
                          otherButtonTitles:@[@"1", @"2", @"3"]
-                                  callback:^(id sender, NSInteger buttonIndex) {
-                                      NSLog(@"##### %ld", buttonIndex);
+                                  callback:^(id _Nonnull sender, NSInteger buttonIndex) {
+                                      NSLog(@"Close[%ld] : %@", buttonIndex, sender);
+                                      [self helloWorld];
                                   }];
+//        [UIAlertView lbk_showWithPresenter:self
+//                                     title:@"Title2"
+//                                   message:@"Message"
+//                               buttonTitle:@"OK"];
+//        [UIAlertView lbk_showWithPresenter:self
+//                                     title:@"Title3"
+//                                   message:@"Message"
+//                               buttonTitle:@"OK"
+//                                  callback:^{
+//                                      NSLog(@"Close");
+//                                      [self helloWorld];
+//                                  }];
+//        [UIAlertView lbk_showWithPresenter:self
+//                                     title:@"Title4"
+//                                   message:@"Message"
+//                         cancelButtonTitle:@"Cancel"
+//                          otherButtonTitle:@"OK"
+//                                  callback:^(id _Nonnull sender, NSInteger buttonIndex) {
+//                                      NSLog(@"Close[%ld] : %@", buttonIndex, sender);
+//                                      [self helloWorld];
+//                                  }];
+//        [UIAlertView lbk_showWithPresenter:self
+//                                     title:@"Title5"
+//                                   message:@"Message"
+//                         cancelButtonTitle:@"Cancel"
+//                          otherButtonTitle:@"OK"
+//                           delayActiveTime:3
+//                                  callback:^(id _Nonnull sender, NSInteger buttonIndex) {
+//                                      NSLog(@"Close[%ld] : %@", buttonIndex, sender);
+//                                      [self helloWorld];
+//                                  }];
+//        [UIAlertView lbk_showWithPresenter:self
+//                                     title:@"Title6"
+//                                   message:@"Message"
+//                         cancelButtonTitle:@"Cancel"
+//                         otherButtonTitles:@[@"1", @"2", @"3"]
+//                           delayActiveTime:5
+//                                  callback:^(id _Nonnull sender, NSInteger buttonIndex) {
+//                                      NSLog(@"Close[%ld] : %@", buttonIndex, sender);
+//                                      [self helloWorld];
+//                                  }];
+//        [UIAlertView lbk_showTextInputWithPresenter:self
+//                                              title:@"Title7"
+//                                            message:@"Message"
+//                                  cancelButtonTitle:@"Cancel"
+//                                   otherButtonTitle:@"OK"
+//                                               text:@"Text"
+//                                        placeholder:@"Placeholder"
+//                                    secureTextEntry:YES
+//                                       keyboardType:UIKeyboardTypeDefault
+//                                         limitation:0
+//                                           callback:^(id _Nonnull sender, NSInteger buttonIndex, NSString * _Nullable text) {
+//                                               NSLog(@"Close[%ld] : %@ -> %@", buttonIndex, sender, text);
+//                                               [self helloWorld];
+//                                           }];
     } forControlEvents:UIControlEventTouchUpInside];
     button.center = self.view.center;
     [self.view addSubview:button];

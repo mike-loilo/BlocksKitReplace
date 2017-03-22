@@ -46,18 +46,18 @@ extension UIAlertView: UIAlertViewDelegate {
     }
 
     /** UIAlertControllerを優先的に使う、cancel/other2つボタンのUIAlertView */
-    class func lbk_show(presenter: UIViewController?, title: String?, message: String?, cancelButtonTitle: String?, otherButtonTitle: String?, callback: ((AnyObject, NSInteger) -> ())?) -> AnyObject {
+    class func lbk_show(presenter: UIViewController?, title: String?, message: String?, cancelButtonTitle: String?, otherButtonTitle: String?, callback: ((_ sender: AnyObject, _ buttonIndex: NSInteger) -> ())?) -> AnyObject {
         return self.lbk_show(presenter: presenter, title: title, message: message, cancelButtonTitle: cancelButtonTitle, otherButtonTitles: nil != otherButtonTitle ? [otherButtonTitle!] : nil, delayActiveTime: 0, callback: callback)
     }
-    class func lbk_show(presenter: UIViewController?, title: String?, message: String?, cancelButtonTitle: String?, otherButtonTitles: [String]?, callback: ((AnyObject, NSInteger) -> ())?) -> AnyObject {
+    class func lbk_show(presenter: UIViewController?, title: String?, message: String?, cancelButtonTitle: String?, otherButtonTitles: [String]?, callback: ((_ sender: AnyObject, _ buttonIndex: NSInteger) -> ())?) -> AnyObject {
         return self.lbk_show(presenter: presenter, title: title, message: message, cancelButtonTitle: cancelButtonTitle, otherButtonTitles: otherButtonTitles, delayActiveTime: 0, callback: callback)
     }
     
     /** UIAlertControllerを優先的に使う、otherButtonを一定時間後に有効にするUIAlertView */
-    class func lbk_show(presenter: UIViewController?, title: String?, message: String?, cancelButtonTitle: String?, otherButtonTitle: String?, delayActiveTime: TimeInterval, callback: ((AnyObject, NSInteger) -> ())?) -> AnyObject {
+    class func lbk_show(presenter: UIViewController?, title: String?, message: String?, cancelButtonTitle: String?, otherButtonTitle: String?, delayActiveTime: TimeInterval, callback: ((_ sender: AnyObject, _ buttonIndex: NSInteger) -> ())?) -> AnyObject {
         return self.lbk_show(presenter: presenter, title: title, message: message, cancelButtonTitle: cancelButtonTitle, otherButtonTitles: nil != otherButtonTitle ? [otherButtonTitle!] : nil, delayActiveTime: delayActiveTime, callback: callback)
     }
-    class func lbk_show(presenter: UIViewController?, title: String?, message: String?, cancelButtonTitle: String?, otherButtonTitles: [String]?, delayActiveTime: TimeInterval, callback: ((AnyObject, NSInteger) -> ())?) -> AnyObject {
+    class func lbk_show(presenter: UIViewController?, title: String?, message: String?, cancelButtonTitle: String?, otherButtonTitles: [String]?, delayActiveTime: TimeInterval, callback: ((_ sender: AnyObject, _ buttonIndex: NSInteger) -> ())?) -> AnyObject {
         if self.controllerIsActive() && nil != presenter {
             let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
             weak var w = alert
@@ -69,7 +69,7 @@ extension UIAlertView: UIAlertViewDelegate {
             if nil != otherButtonTitles {
                 for otherButtonTitle in otherButtonTitles! {
                     let index = otherButtonTitles!.index(of: otherButtonTitle)!
-                    let loginAction = UIAlertAction(title: otherButtonTitle, style: .default, handler: { (action) in
+                    let loginAction = UIAlertAction(title: otherButtonTitle, style: (1 == otherButtonTitles!.count ? .destructive : .default), handler: { (action) in
                         guard let strong = w else { return }
                         if nil != callback { callback!(strong, index + 1) }
                     })
@@ -83,6 +83,7 @@ extension UIAlertView: UIAlertViewDelegate {
                 }
                 presenter!.present(alert, animated: true, completion: {
                     DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + Double(Int64(delayActiveTime * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC), execute: {
+                        if nil == w { return }
                         for loginAction in loginActions {
                             loginAction.isEnabled = true
                         }
@@ -100,12 +101,12 @@ extension UIAlertView: UIAlertViewDelegate {
     }
     
     /** UIAlertControllerを優先的に使う、テキスト入力UIAlertView */
-    class func showTextInput(presenter: UIViewController?, title: String?, message: String?, cancelButtonTitle: String?, otherButtonTitle: String?, text: String?, placeholder: String?, secureTextEntry: Bool, keyboardType: UIKeyboardType, limitation: UInt, callback: ((AnyObject, NSInteger, String?) -> ())?) -> AnyObject {
+    class func lbk_showTextInput(presenter: UIViewController?, title: String?, message: String?, cancelButtonTitle: String?, otherButtonTitle: String?, text: String?, placeholder: String?, secureTextEntry: Bool, keyboardType: UIKeyboardType, limitation: UInt, callback: ((_ sender: AnyObject, _ buttonIndex: NSInteger, _ text: String?) -> ())?) -> AnyObject {
         // UIAlertViewでのテキスト入力中に文字数制限をするため、UITextFieldTextDidChangeNotificationで実現する
         weak var _textField: UITextField? = nil
         NotificationCenter.default.addObserver(forName: NSNotification.Name.UITextFieldTextDidChange, object: nil, queue: nil) { (note) in
             if nil == note.object { return }
-            if !(String(describing: type(of: self)) as NSString).isEqual(to: "_UIAlertControllerTextField") { return }
+            if !(String(describing: type(of: note.object!)) as NSString).isEqual(to: "_UIAlertControllerTextField") { return }
             let textField = note.object as! UITextField
             if textField != _textField { return }
             if 0 == limitation { return }
@@ -155,7 +156,7 @@ extension UIAlertView: UIAlertViewDelegate {
         }
     }
     
-    fileprivate convenience init(title: String?, message: String?, cancelButtonTitle: String?, otherButtonTitles: [String]?, delayActiveTime: TimeInterval, callback: ((AnyObject, NSInteger) -> ())?) {
+    fileprivate convenience init(title: String?, message: String?, cancelButtonTitle: String?, otherButtonTitles: [String]?, delayActiveTime: TimeInterval, callback: ((_ sender: AnyObject, _ buttonIndex: NSInteger) -> ())?) {
         self.init(title: title, message: message, delegate: nil, cancelButtonTitle: cancelButtonTitle)
         if nil != otherButtonTitles {
             for otherButtonTitle in otherButtonTitles! {
