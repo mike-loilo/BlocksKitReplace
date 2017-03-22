@@ -16,13 +16,13 @@
     [super viewDidLoad];
     
     @weakify(self)
-    self.navigationItem.rightBarButtonItem = [UIBarButtonItem.alloc initWithTitle:@"TEST" style:UIBarButtonItemStylePlain handler:^(UIBarButtonItem * _Nonnull sender) {
+    self.navigationItem.rightBarButtonItem = [UIBarButtonItem lbk_itemWithTitle:@"TEST" style:UIBarButtonItemStylePlain handler:^(UIBarButtonItem * _Nonnull sender) {
         @strongify(self)
         if (!self) return;
         
         [self helloWorld];
     }];
-//    self.navigationItem.rightBarButtonItem = [UIBarButtonItem.alloc initWithTitle:@"NULL" style:UIBarButtonItemStylePlain handler:NULL];
+//    self.navigationItem.rightBarButtonItem = [UIBarButtonItem lbk_itemWithTitle:@"NULL" style:UIBarButtonItemStylePlain handler:NULL];
     
 //    NSArray *array = @[@"a", @"b", @"c"];
 //    array = [array lbk_mapWithBlock:^id(id obj) {

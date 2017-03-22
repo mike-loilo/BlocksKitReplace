@@ -36,25 +36,41 @@ extension UIBarButtonItem {
         }
     }
     
-    public convenience init(image: UIImage?, style: UIBarButtonItemStyle, handler: ((UIBarButtonItem) -> ())?) {
+    public class func lbk_item(image: UIImage?, style: UIBarButtonItemStyle, handler: ((UIBarButtonItem) -> ())?) -> UIBarButtonItem {
+        return UIBarButtonItem(image: image, style: style, handler: handler)
+    }
+    
+    private convenience init(image: UIImage?, style: UIBarButtonItemStyle, handler: ((UIBarButtonItem) -> ())?) {
         self.init(image: image, style: style, target: nil, action: #selector(UIBarButtonItem.lbk_tapAction(_:)))
         self.target = self
         self.lbk_handler = handler
     }
     
-    public convenience init(image: UIImage?, landscapeImagePhone: UIImage?, style: UIBarButtonItemStyle, handler: ((UIBarButtonItem) -> ())?) {
+    public class func lbk_item(image: UIImage?, landscapeImagePhone: UIImage?, style: UIBarButtonItemStyle, handler: ((UIBarButtonItem) -> ())?) -> UIBarButtonItem {
+        return UIBarButtonItem(image: image, landscapeImagePhone: landscapeImagePhone, style: style, handler: handler)
+    }
+    
+    private convenience init(image: UIImage?, landscapeImagePhone: UIImage?, style: UIBarButtonItemStyle, handler: ((UIBarButtonItem) -> ())?) {
         self.init(image: image, landscapeImagePhone: landscapeImagePhone, style: style, target: nil, action: #selector(UIBarButtonItem.lbk_tapAction(_:)))
         self.target = self
         self.lbk_handler = handler
     }
     
-    public convenience init(barButtonSystemItem: UIBarButtonSystemItem, handler: ((UIBarButtonItem) -> ())?) {
+    public class func lbk_item(barButtonSystemItem: UIBarButtonSystemItem, handler: ((UIBarButtonItem) -> ())?) -> UIBarButtonItem {
+        return UIBarButtonItem(barButtonSystemItem: barButtonSystemItem, handler: handler)
+    }
+    
+    private convenience init(barButtonSystemItem: UIBarButtonSystemItem, handler: ((UIBarButtonItem) -> ())?) {
         self.init(barButtonSystemItem: barButtonSystemItem, target: nil, action: #selector(UIBarButtonItem.lbk_tapAction(_:)))
         self.target = self
         self.lbk_handler = handler
     }
     
-    public convenience init(title: String?, style: UIBarButtonItemStyle, handler: ((UIBarButtonItem) -> ())?) {
+    public class func lbk_item(title: String?, style: UIBarButtonItemStyle, handler: ((UIBarButtonItem) -> ())?) -> UIBarButtonItem {
+        return UIBarButtonItem(title: title, style: style, handler: handler)
+    }
+    
+    private convenience init(title: String?, style: UIBarButtonItemStyle, handler: ((UIBarButtonItem) -> ())?) {
         self.init(title: title, style: style, target: nil, action: #selector(UIBarButtonItem.lbk_tapAction(_:)))
         self.target = self
         self.lbk_handler = handler
