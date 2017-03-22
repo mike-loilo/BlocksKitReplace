@@ -66,15 +66,23 @@
         @strongify(self)
         if (!self) return;
         
-        [UIAlertView lbk_showWithPresenter:self
-                                     title:@"Title"
-                                   message:@"Message"
-                         cancelButtonTitle:@"Cancel"
-                         otherButtonTitles:@[@"1", @"2", @"3"]
-                                  callback:^(id _Nonnull sender, NSInteger buttonIndex) {
-                                      NSLog(@"Close[%ld] : %@", buttonIndex, sender);
-                                      [self helloWorld];
-                                  }];
+//        [UIAlertView lbk_showWithPresenter:self
+//                                     title:@"Title"
+//                                   message:@"Message"
+//                         cancelButtonTitle:@"Cancel"
+//                         otherButtonTitles:@[@"1", @"2", @"3"]
+//                                  callback:^(id _Nonnull sender, NSInteger buttonIndex) {
+//                                      NSLog(@"Close[%ld] : %@", buttonIndex, sender);
+//                                      [self helloWorld];
+//                                  }];
+        [UIAlertView lbk_showWithTitle:@"Title"
+                               message:@"Message"
+                     cancelButtonTitle:@"Cancel"
+                      otherButtonTitle:@"OK"
+                              callback:^(id _Nonnull sender, NSInteger buttonIndex) {
+                                  NSLog(@"Close[%ld] : %@", buttonIndex, sender);
+                                  [self helloWorld];
+                              }];
 //        [UIAlertView lbk_showWithPresenter:self
 //                                     title:@"Title2"
 //                                   message:@"Message"

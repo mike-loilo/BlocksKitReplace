@@ -21,8 +21,10 @@ typealias UIAlertViewTextInputCallback = @convention(block) (_ sender: AnyObject
  * SwiftだとalertViewShouldEnableFirstOtherButtonが呼ばれないみたいなので、キャンセルボタン以外を一時的に無効にしておく処理が実現できない。
  * 仮にalertViewShouldEnableFirstOtherButtonが呼ばれるようになったとしても、ボタンを有効に戻すために一度閉じて開き直す処理が効かない。
  * 入力用のテキストボックスに関しては、alertViewStyleに.secureTextInputや.plainTextInputを設定しているにも関わらず表示されない。
+ *
+ * ただし、iOS8系だとUIViewControllerの状態に依ってはUIAlertControllerで表示しきれないことがあるため、特定のメソッドだけUIAlertViewで対応しておく
  */
-extension UIAlertView {
+extension UIAlertView: UIAlertViewDelegate {
 
     /** メッセージを表示するだけのUIAlertController */
     class func lbk_show(presenter: UIViewController, title: String?, message: String?, buttonTitle: String?) -> AnyObject {
@@ -130,6 +132,23 @@ extension UIAlertView {
         presenter.present(alert, animated: true, completion: nil)
         return alert
     }
+    
+    /** cancel/other2つボタンのUIAlertView
+     * iOS8系専用なので、iOS9系以降では使用禁止
+     */
+    class func lbk_show(title: String?, message: String?, cancelButtonTitle: String?, otherButtonTitle: String?, callback: ((_ sender: AnyObject, _ buttonIndex: NSInteger) -> ())?) -> AnyObject? {
+        if #available(iOS 9, *) {
+            return nil
+        }
+        let alert = UIAlertView(title: title, message: message, delegate: nil, cancelButtonTitle: cancelButtonTitle)
+        if nil != otherButtonTitle {
+            alert.addButton(withTitle: otherButtonTitle)
+        }
+        alert.lbk_callback = callback
+        alert.delegate = alert
+        alert.show()
+        return alert
+    }
 
     //MARK:- Private Properties
     
@@ -168,6 +187,14 @@ extension UIAlertView {
                 }
                 setHandler(handler: newValue!)
             }
+        }
+    }
+
+    //MARK:- UIAlertViewDelegate
+    
+    public func alertView(_ alertView: UIAlertView, clickedButtonAt buttonIndex: Int) {
+        if nil != alertView.lbk_callback {
+            alertView.lbk_callback!(alertView, buttonIndex)
         }
     }
 }
