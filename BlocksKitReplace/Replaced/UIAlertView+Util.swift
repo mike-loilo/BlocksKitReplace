@@ -60,7 +60,11 @@ extension UIAlertView {
         if nil != otherButtonTitles {
             for otherButtonTitle in otherButtonTitles! {
                 let index = otherButtonTitles!.index(of: otherButtonTitle)!
-                let loginAction = UIAlertAction(title: otherButtonTitle, style: (1 == otherButtonTitles!.count ? .destructive : .default), handler: { (action) in
+                var style = UIAlertActionStyle.default
+                if #available(iOS 9, *) {
+                    style = 0 < delayActiveTime && 1 == otherButtonTitles!.count ? .destructive : .default
+                }
+                let loginAction = UIAlertAction(title: otherButtonTitle, style: style, handler: { (action) in
                     guard let strong = w else { return }
                     if nil != callback { callback!(strong, index + 1) }
                 })

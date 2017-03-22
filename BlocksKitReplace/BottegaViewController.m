@@ -116,21 +116,21 @@
 //                                      NSLog(@"Close[%ld] : %@", buttonIndex, sender);
 //                                      [self helloWorld];
 //                                  }];
-//        UIAlertView *const alertView = [UIAlertView lbk_showTextInputWithPresenter:self
-//                                                                             title:@"Title7"
-//                                                                           message:@"Message"
-//                                                                 cancelButtonTitle:@"Cancel"
-//                                                                  otherButtonTitle:@"OK"
-//                                                                              text:@"Text"
-//                                                                       placeholder:@"Placeholder"
-//                                                                   secureTextEntry:NO
-//                                                                      keyboardType:UIKeyboardTypeDefault
-//                                                                        limitation:0
-//                                                                          callback:^(id _Nonnull sender, NSInteger buttonIndex, NSString * _Nullable text) {
-//                                                                              NSLog(@"Close[%ld] : %@ -> %@", buttonIndex, sender, text);
-//                                                                              [self helloWorld];
-//                                                                          }];
-//        UITextField *const textField = alertView.textField;
+//        id const alertView = [UIAlertView lbk_showTextInputWithPresenter:self
+//                                                                   title:@"Title7"
+//                                                                 message:@"Message"
+//                                                       cancelButtonTitle:@"Cancel"
+//                                                        otherButtonTitle:@"OK"
+//                                                                    text:@"Text"
+//                                                             placeholder:@"Placeholder"
+//                                                         secureTextEntry:NO
+//                                                            keyboardType:UIKeyboardTypeDefault
+//                                                              limitation:10
+//                                                                callback:^(id _Nonnull sender, NSInteger buttonIndex, NSString * _Nullable text) {
+//                                                                    NSLog(@"Close[%ld] : %@ -> %@", buttonIndex, sender, text);
+//                                                                    [self helloWorld];
+//                                                                }];
+//        UITextField *const textField = [alertView textField];
 //        // iOS8以降だと、遅延実行しないと選択状態にできない
 //        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
 //            textField.selectedTextRange = [textField textRangeFromPosition:textField.beginningOfDocument toPosition:textField.endOfDocument];
