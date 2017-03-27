@@ -10,7 +10,6 @@
 		278D52951E7B767300E4D93F /* UIGestureRecognizer+Util.swift in Sources */ = {isa = PBXBuildFile; fileRef = 278D52941E7B767300E4D93F /* UIGestureRecognizer+Util.swift */; };
 		278D52991E7B8F5800E4D93F /* NSTimer+Util.swift in Sources */ = {isa = PBXBuildFile; fileRef = 278D52981E7B8F5800E4D93F /* NSTimer+Util.swift */; };
 		278D529D1E7BAEB200E4D93F /* UIControl+Util.swift in Sources */ = {isa = PBXBuildFile; fileRef = 278D529C1E7BAEB200E4D93F /* UIControl+Util.swift */; };
-		278D52A11E7BBC7C00E4D93F /* UIAlertView+Util.swift in Sources */ = {isa = PBXBuildFile; fileRef = 278D52A01E7BBC7C00E4D93F /* UIAlertView+Util.swift */; };
 		2791FF981E79133600635513 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 2791FF971E79133600635513 /* main.m */; };
 		2791FF9B1E79133600635513 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 2791FF9A1E79133600635513 /* AppDelegate.m */; };
 		2791FF9E1E79133600635513 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2791FF9D1E79133600635513 /* ViewController.m */; };
@@ -20,6 +19,7 @@
 		2791FFAF1E7915CD00635513 /* BottegaViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2791FFAE1E7915CD00635513 /* BottegaViewController.m */; };
 		2791FFB31E791A1700635513 /* UIBarButtonItem+Util.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2791FFB21E791A1700635513 /* UIBarButtonItem+Util.swift */; };
 		2791FFB51E79452700635513 /* NSArray+Util.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2791FFB41E79452700635513 /* NSArray+Util.swift */; };
+		27D24C561E89028F00E84197 /* UIAlertController+Util.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27D24C551E89028F00E84197 /* UIAlertController+Util.swift */; };
 		92A77FE11BA4834CC3EAD284 /* libPods-BlocksKitReplace.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0E963CC7F05C23DFACA6381F /* libPods-BlocksKitReplace.a */; };
 /* End PBXBuildFile section */
 
@@ -28,7 +28,6 @@
 		278D52941E7B767300E4D93F /* UIGestureRecognizer+Util.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "UIGestureRecognizer+Util.swift"; path = "Replaced/UIGestureRecognizer+Util.swift"; sourceTree = "<group>"; };
 		278D52981E7B8F5800E4D93F /* NSTimer+Util.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "NSTimer+Util.swift"; path = "Replaced/NSTimer+Util.swift"; sourceTree = "<group>"; };
 		278D529C1E7BAEB200E4D93F /* UIControl+Util.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "UIControl+Util.swift"; path = "Replaced/UIControl+Util.swift"; sourceTree = "<group>"; };
-		278D52A01E7BBC7C00E4D93F /* UIAlertView+Util.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "UIAlertView+Util.swift"; path = "Replaced/UIAlertView+Util.swift"; sourceTree = "<group>"; };
 		2791FF931E79133600635513 /* BlocksKitReplace.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BlocksKitReplace.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2791FF971E79133600635513 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		2791FF991E79133600635513 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -44,6 +43,7 @@
 		2791FFB11E791A1600635513 /* BlocksKitReplace-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BlocksKitReplace-Bridging-Header.h"; sourceTree = "<group>"; };
 		2791FFB21E791A1700635513 /* UIBarButtonItem+Util.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "UIBarButtonItem+Util.swift"; path = "Replaced/UIBarButtonItem+Util.swift"; sourceTree = "<group>"; };
 		2791FFB41E79452700635513 /* NSArray+Util.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "NSArray+Util.swift"; path = "Replaced/NSArray+Util.swift"; sourceTree = "<group>"; };
+		27D24C551E89028F00E84197 /* UIAlertController+Util.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "UIAlertController+Util.swift"; path = "Replaced/UIAlertController+Util.swift"; sourceTree = "<group>"; };
 		A06504C8746062E3D6FDA698 /* Pods-BlocksKitReplace.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BlocksKitReplace.release.xcconfig"; path = "Pods/Target Support Files/Pods-BlocksKitReplace/Pods-BlocksKitReplace.release.xcconfig"; sourceTree = "<group>"; };
 		D57F8C3885ED462A85160FE1 /* Pods-BlocksKitReplace.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BlocksKitReplace.debug.xcconfig"; path = "Pods/Target Support Files/Pods-BlocksKitReplace/Pods-BlocksKitReplace.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -114,7 +114,7 @@
 				278D52941E7B767300E4D93F /* UIGestureRecognizer+Util.swift */,
 				278D52981E7B8F5800E4D93F /* NSTimer+Util.swift */,
 				278D529C1E7BAEB200E4D93F /* UIControl+Util.swift */,
-				278D52A01E7BBC7C00E4D93F /* UIAlertView+Util.swift */,
+				27D24C551E89028F00E84197 /* UIAlertController+Util.swift */,
 			);
 			name = Replaced;
 			sourceTree = "<group>";
@@ -265,11 +265,11 @@
 				2791FF9B1E79133600635513 /* AppDelegate.m in Sources */,
 				2791FFB31E791A1700635513 /* UIBarButtonItem+Util.swift in Sources */,
 				2791FF981E79133600635513 /* main.m in Sources */,
+				27D24C561E89028F00E84197 /* UIAlertController+Util.swift in Sources */,
 				2791FFB51E79452700635513 /* NSArray+Util.swift in Sources */,
 				278D529D1E7BAEB200E4D93F /* UIControl+Util.swift in Sources */,
 				278D52951E7B767300E4D93F /* UIGestureRecognizer+Util.swift in Sources */,
 				2791FFAF1E7915CD00635513 /* BottegaViewController.m in Sources */,
-				278D52A11E7BBC7C00E4D93F /* UIAlertView+Util.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -335,7 +335,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -377,7 +377,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";

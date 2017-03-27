@@ -1,30 +1,28 @@
 //
-//  UIAlertView+Util.swift
+//  UIAlertController+Util.swift
 //  LoiloPad
 //
-//  Created by mike on 2017/03/17.
+//  Created by mike on 2017/03/27.
 //
 //
 
 import UIKit
 
-var UIAlertViewCallbackKey: UInt8 = 0
-var UIAlertViewTextInputCallbackKey: UInt8 = 0
-typealias UIAlertViewCallback = @convention(block) (_ sender: AnyObject, _ buttonIndex: NSInteger) -> ()
-typealias UIAlertViewTextInputCallback = @convention(block) (_ sender: AnyObject, _ buttonIndex: NSInteger, _ text: String?) -> ()
+var UIAlertControllerCallbackKey: UInt8 = 0
+var UIAlertControllerTextInputCallbackKey: UInt8 = 0
+typealias UIAlertControllerCallback = @convention(block) (_ sender: AnyObject, _ buttonIndex: NSInteger) -> ()
+typealias UIAlertControllerTextInputCallback = @convention(block) (_ sender: AnyObject, _ buttonIndex: NSInteger, _ text: String?) -> ()
 
 /** 元々、UIAlertViewを拡張して、UIAlertControllerを扱えるようにしていたが、
  * Swiftで実装すると、ボタンの有効化を遅延させたり、入力用のテキストボックスを開いたりするときにうまくいかない
- * iOS8以降はUIAlertView自体が非推奨になっていることもあり、UIAlertViewでは実装しない
+ * iOS8以降はUIAlertView自体が非推奨になっていることもあり、UIAlertControllerの拡張として実装する
  *
- * [問題]
- * SwiftだとalertViewShouldEnableFirstOtherButtonが呼ばれないみたいなので、キャンセルボタン以外を一時的に無効にしておく処理が実現できない。
+ * [UIAlertViewでの問題]
+ * SwiftだとUIAlertViewDelegateのalertViewShouldEnableFirstOtherButtonが呼ばれないみたいなので、キャンセルボタン以外を一時的に無効にしておく処理が実現できない。
  * 仮にalertViewShouldEnableFirstOtherButtonが呼ばれるようになったとしても、ボタンを有効に戻すために一度閉じて開き直す処理が効かない。
  * 入力用のテキストボックスに関しては、alertViewStyleに.secureTextInputや.plainTextInputを設定しているにも関わらず表示されない。
- *
- * ただし、iOS8系だとUIViewControllerの状態に依ってはUIAlertControllerで表示しきれないことがあるため、特定のメソッドだけUIAlertViewで対応しておく
  */
-extension UIAlertView: UIAlertViewDelegate {
+extension UIAlertController {
 
     /** メッセージを表示するだけのUIAlertController */
     class func lbk_show(presenter: UIViewController, title: String?, message: String?, buttonTitle: String?) -> AnyObject {
@@ -93,9 +91,9 @@ extension UIAlertView: UIAlertViewDelegate {
         return alert
     }
     
-    /** UIAlertControllerを優先的に使う、テキスト入力UIAlertView */
+    /** テキスト入力UIAlertController */
     class func lbk_showTextInput(presenter: UIViewController, title: String?, message: String?, cancelButtonTitle: String?, otherButtonTitle: String?, text: String?, placeholder: String?, secureTextEntry: Bool, keyboardType: UIKeyboardType, limitation: UInt, callback: ((_ sender: AnyObject, _ buttonIndex: NSInteger, _ text: String?) -> ())?) -> AnyObject {
-        // UIAlertViewでのテキスト入力中に文字数制限をするため、UITextFieldTextDidChangeNotificationで実現する
+        // UIAlertControllerでのテキスト入力中に文字数制限をするため、UITextFieldTextDidChangeNotificationで実現する
         weak var _textField: UITextField? = nil
         NotificationCenter.default.addObserver(forName: NSNotification.Name.UITextFieldTextDidChange, object: nil, queue: nil) { (note) in
             if nil == note.object { return }
@@ -133,76 +131,48 @@ extension UIAlertView: UIAlertViewDelegate {
         return alert
     }
     
-    /** cancel/other2つボタンのUIAlertView
-     * iOS8系専用なので、iOS9系以降では使用禁止
-     */
-    class func lbk_show(title: String?, message: String?, cancelButtonTitle: String?, otherButtonTitle: String?, callback: ((_ sender: AnyObject, _ buttonIndex: NSInteger) -> ())?) -> AnyObject? {
-        if #available(iOS 9, *) {
-            return nil
-        }
-        let alert = UIAlertView(title: title, message: message, delegate: nil, cancelButtonTitle: cancelButtonTitle)
-        if nil != otherButtonTitle {
-            alert.addButton(withTitle: otherButtonTitle)
-        }
-        alert.lbk_callback = callback
-        alert.delegate = alert
-        alert.show()
-        return alert
+    public var textField: UITextField? {
+        return self.textFields?.first
     }
 
     //MARK:- Private Properties
     
-    fileprivate var lbk_callback: UIAlertViewCallback? {
+    fileprivate var lbk_callback: UIAlertControllerCallback? {
         get {
-            let object: AnyObject? = objc_getAssociatedObject(self, &UIAlertViewCallbackKey) as AnyObject?
+            let object: AnyObject? = objc_getAssociatedObject(self, &UIAlertControllerCallbackKey) as AnyObject?
             if (nil == object) { return nil }
-            return object as? UIAlertViewCallback
+            return object as? UIAlertControllerCallback
         }
         set {
             if nil == newValue {
-                objc_setAssociatedObject(self, &UIAlertViewCallbackKey, newValue as AnyObject?, objc_AssociationPolicy.OBJC_ASSOCIATION_COPY_NONATOMIC)
+                objc_setAssociatedObject(self, &UIAlertControllerCallbackKey, newValue as AnyObject?, objc_AssociationPolicy.OBJC_ASSOCIATION_COPY_NONATOMIC)
             }
             else {
-                func setHandler(handler: @escaping UIAlertViewCallback) {
-                    objc_setAssociatedObject(self, &UIAlertViewCallbackKey, handler as! AnyObject, objc_AssociationPolicy.OBJC_ASSOCIATION_COPY_NONATOMIC)
+                func setHandler(handler: @escaping UIAlertControllerCallback) {
+                    objc_setAssociatedObject(self, &UIAlertControllerCallbackKey, handler as! AnyObject, objc_AssociationPolicy.OBJC_ASSOCIATION_COPY_NONATOMIC)
                 }
                 setHandler(handler: newValue!)
             }
         }
     }
     
-    fileprivate var lbk_textInputCallback: UIAlertViewTextInputCallback? {
+    fileprivate var lbk_textInputCallback: UIAlertControllerTextInputCallback? {
         get {
-            let object: AnyObject? = objc_getAssociatedObject(self, &UIAlertViewTextInputCallbackKey) as AnyObject?
+            let object: AnyObject? = objc_getAssociatedObject(self, &UIAlertControllerTextInputCallbackKey) as AnyObject?
             if (nil == object) { return nil }
-            return object as? UIAlertViewTextInputCallback
+            return object as? UIAlertControllerTextInputCallback
         }
         set {
             if nil == newValue {
-                objc_setAssociatedObject(self, &UIAlertViewTextInputCallbackKey, newValue as AnyObject?, objc_AssociationPolicy.OBJC_ASSOCIATION_COPY_NONATOMIC)
+                objc_setAssociatedObject(self, &UIAlertControllerTextInputCallbackKey, newValue as AnyObject?, objc_AssociationPolicy.OBJC_ASSOCIATION_COPY_NONATOMIC)
             }
             else {
-                func setHandler(handler: @escaping UIAlertViewTextInputCallback) {
-                    objc_setAssociatedObject(self, &UIAlertViewTextInputCallbackKey, handler as! AnyObject, objc_AssociationPolicy.OBJC_ASSOCIATION_COPY_NONATOMIC)
+                func setHandler(handler: @escaping UIAlertControllerTextInputCallback) {
+                    objc_setAssociatedObject(self, &UIAlertControllerTextInputCallbackKey, handler as! AnyObject, objc_AssociationPolicy.OBJC_ASSOCIATION_COPY_NONATOMIC)
                 }
                 setHandler(handler: newValue!)
             }
         }
-    }
-
-    //MARK:- UIAlertViewDelegate
-    
-    public func alertView(_ alertView: UIAlertView, clickedButtonAt buttonIndex: Int) {
-        if nil != alertView.lbk_callback {
-            alertView.lbk_callback!(alertView, buttonIndex)
-        }
-    }
-}
-
-extension UIAlertController {
-    
-    public var textField: UITextField? {
-        return self.textFields?.first
     }
     
 }

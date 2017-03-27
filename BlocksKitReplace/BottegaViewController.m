@@ -66,78 +66,70 @@
         @strongify(self)
         if (!self) return;
         
-//        [UIAlertView lbk_showWithPresenter:self
-//                                     title:@"Title"
-//                                   message:@"Message"
-//                         cancelButtonTitle:@"Cancel"
-//                         otherButtonTitles:@[@"1", @"2", @"3"]
-//                                  callback:^(id _Nonnull sender, NSInteger buttonIndex) {
-//                                      NSLog(@"Close[%ld] : %@", buttonIndex, sender);
-//                                      [self helloWorld];
-//                                  }];
-        [UIAlertView lbk_showWithTitle:@"Title"
-                               message:@"Message"
-                     cancelButtonTitle:@"Cancel"
-                      otherButtonTitle:@"OK"
-                              callback:^(id _Nonnull sender, NSInteger buttonIndex) {
-                                  NSLog(@"Close[%ld] : %@", buttonIndex, sender);
-                                  [self helloWorld];
-                              }];
-//        [UIAlertView lbk_showWithPresenter:self
-//                                     title:@"Title2"
-//                                   message:@"Message"
-//                               buttonTitle:@"OK"];
-//        [UIAlertView lbk_showWithPresenter:self
-//                                     title:@"Title3"
-//                                   message:@"Message"
-//                               buttonTitle:@"OK"
-//                                  callback:^{
-//                                      NSLog(@"Close");
-//                                      [self helloWorld];
-//                                  }];
-//        [UIAlertView lbk_showWithPresenter:self
-//                                     title:@"Title4"
-//                                   message:@"Message"
-//                         cancelButtonTitle:@"Cancel"
-//                          otherButtonTitle:@"OK"
-//                                  callback:^(id _Nonnull sender, NSInteger buttonIndex) {
-//                                      NSLog(@"Close[%ld] : %@", buttonIndex, sender);
-//                                      [self helloWorld];
-//                                  }];
-//        [UIAlertView lbk_showWithPresenter:self
-//                                     title:@"Title5"
-//                                   message:@"Message"
-//                         cancelButtonTitle:@"Cancel"
-//                          otherButtonTitle:@"OK"
-//                           delayActiveTime:3
-//                                  callback:^(id _Nonnull sender, NSInteger buttonIndex) {
-//                                      NSLog(@"Close[%ld] : %@", buttonIndex, sender);
-//                                      [self helloWorld];
-//                                  }];
-//        [UIAlertView lbk_showWithPresenter:self
-//                                     title:@"Title6"
-//                                   message:@"Message"
-//                         cancelButtonTitle:@"Cancel"
-//                         otherButtonTitles:@[@"1", @"2", @"3"]
-//                           delayActiveTime:5
-//                                  callback:^(id _Nonnull sender, NSInteger buttonIndex) {
-//                                      NSLog(@"Close[%ld] : %@", buttonIndex, sender);
-//                                      [self helloWorld];
-//                                  }];
-//        id const alertView = [UIAlertView lbk_showTextInputWithPresenter:self
-//                                                                   title:@"Title7"
-//                                                                 message:@"Message"
-//                                                       cancelButtonTitle:@"Cancel"
-//                                                        otherButtonTitle:@"OK"
-//                                                                    text:@"Text"
-//                                                             placeholder:@"Placeholder"
-//                                                         secureTextEntry:NO
-//                                                            keyboardType:UIKeyboardTypeDefault
-//                                                              limitation:10
-//                                                                callback:^(id _Nonnull sender, NSInteger buttonIndex, NSString * _Nullable text) {
-//                                                                    NSLog(@"Close[%ld] : %@ -> %@", buttonIndex, sender, text);
-//                                                                    [self helloWorld];
-//                                                                }];
+        [UIAlertController lbk_showWithPresenter:self
+                                           title:@"Title"
+                                         message:@"Message"
+                               cancelButtonTitle:@"Cancel"
+                               otherButtonTitles:@[@"1", @"2", @"3"]
+                                        callback:^(id _Nonnull sender, NSInteger buttonIndex) {
+                                            NSLog(@"Close[%ld] : %@", buttonIndex, sender);
+                                            [self helloWorld];
+                                        }];
+//        [UIAlertController lbk_showWithPresenter:self
+//                                           title:@"Title2"
+//                                         message:@"Message"
+//                                     buttonTitle:@"OK"];
+//        [UIAlertController lbk_showWithPresenter:self
+//                                           title:@"Title3"
+//                                         message:@"Message"
+//                                     buttonTitle:@"OK"
+//                                        callback:^{
+//                                            NSLog(@"Close");
+//                                            [self helloWorld];
+//                                        }];
+//        [UIAlertController lbk_showWithPresenter:self
+//                                           title:@"Title4"
+//                                         message:@"Message"
+//                               cancelButtonTitle:@"Cancel"
+//                                otherButtonTitle:@"OK"
+//                                        callback:^(id _Nonnull sender, NSInteger buttonIndex) {
+//                                            NSLog(@"Close[%ld] : %@", buttonIndex, sender);
+//                                            [self helloWorld];
+//                                        }];
+//        [UIAlertController lbk_showWithPresenter:self
+//                                           title:@"Title5"
+//                                         message:@"Message"
+//                               cancelButtonTitle:@"Cancel"
+//                                otherButtonTitle:@"OK"
+//                                 delayActiveTime:3
+//                                        callback:^(id _Nonnull sender, NSInteger buttonIndex) {
+//                                            NSLog(@"Close[%ld] : %@", buttonIndex, sender);
+//                                            [self helloWorld];
+//                                        }];
+//        [UIAlertController lbk_showWithPresenter:self
+//                                           title:@"Title6"
+//                                         message:@"Message"
+//                               cancelButtonTitle:@"Cancel"
+//                               otherButtonTitles:@[@"1", @"2", @"3"]
+//                                 delayActiveTime:5
+//                                        callback:^(id _Nonnull sender, NSInteger buttonIndex) {
+//                                            NSLog(@"Close[%ld] : %@", buttonIndex, sender);
+//                                            [self helloWorld];
+//                                        }];
+//        id const alertView = [UIAlertController lbk_showTextInputWithPresenter:self
+//                                                                         title:@"Title7"
+//                                                                       message:@"Message"
+//                                                             cancelButtonTitle:@"Cancel"
+//                                                              otherButtonTitle:@"OK"
+//                                                                          text:@"Text"
+//                                                                   placeholder:@"Placeholder"
+//                                                               secureTextEntry:NO
+//                                                                  keyboardType:UIKeyboardTypeDefault
+//                                                                    limitation:10
+//                                                                      callback:^(id _Nonnull sender, NSInteger buttonIndex, NSString * _Nullable text) {
+//                                                                          NSLog(@"Close[%ld] : %@ -> %@", buttonIndex, sender, text);
+//                                                                          [self helloWorld];
+//                                                                      }];
 //        UITextField *const textField = [alertView textField];
 //        // iOS8以降だと、遅延実行しないと選択状態にできない
 //        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
