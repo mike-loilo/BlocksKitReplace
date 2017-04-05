@@ -15,17 +15,14 @@ extension UIBarButtonItem {
     
     fileprivate var lbk_handler: UIBarButtonItemHandler? {
         get {
-            let object: AnyObject? = objc_getAssociatedObject(self, &UIBarButtonItemHandlerKey) as AnyObject?
-            if (nil == object) {
-                return nil
-            }
-            else {
+            if let object = objc_getAssociatedObject(self, &UIBarButtonItemHandlerKey) {
                 return object as? UIBarButtonItemHandler
             }
+            return nil
         }
         set {
             if nil == newValue {
-                objc_setAssociatedObject(self, &UIBarButtonItemHandlerKey, newValue as AnyObject?, objc_AssociationPolicy.OBJC_ASSOCIATION_COPY_NONATOMIC)
+                objc_setAssociatedObject(self, &UIBarButtonItemHandlerKey, nil, objc_AssociationPolicy.OBJC_ASSOCIATION_COPY_NONATOMIC)
             }
             else {
                 func setHandler(handler: @escaping UIBarButtonItemHandler) {
@@ -65,8 +62,6 @@ extension UIBarButtonItem {
     }
     
     func lbk_tapAction(_ sender: AnyObject) {
-        if nil != self.lbk_handler {
-            self.lbk_handler!(self)
-        }
+        self.lbk_handler?(self)
     }
 }

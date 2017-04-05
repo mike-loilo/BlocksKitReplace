@@ -16,17 +16,14 @@ extension UIControl {
 
     fileprivate var lbk_handler: UIControlHandler? {
         get {
-            let object: AnyObject? = objc_getAssociatedObject(self, &UIControlHandlerKey) as AnyObject?
-            if (nil == object) {
-                return nil
-            }
-            else {
+            if let object = objc_getAssociatedObject(self, &UIControlHandlerKey) {
                 return object as? UIControlHandler
             }
+            return nil
         }
         set {
             if nil == newValue {
-                objc_setAssociatedObject(self, &UIControlHandlerKey, newValue as AnyObject?, objc_AssociationPolicy.OBJC_ASSOCIATION_COPY_NONATOMIC)
+                objc_setAssociatedObject(self, &UIControlHandlerKey, nil, objc_AssociationPolicy.OBJC_ASSOCIATION_COPY_NONATOMIC)
             }
             else {
                 func setHandler(handler: @escaping UIControlHandler) {
@@ -44,10 +41,7 @@ extension UIControl {
     }
     
     func lbk_handleAction(_ sender: UIControl) {
-        let handler = sender.lbk_handler
-        if nil == handler { return }
-        
-        handler!(sender)
+        sender.lbk_handler?(sender)
     }
 
 }

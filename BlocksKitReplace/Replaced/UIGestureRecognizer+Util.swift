@@ -17,17 +17,14 @@ extension UIGestureRecognizer {
 
     fileprivate var lbk_handler: UIGestureRecognizerHandler? {
         get {
-            let object: AnyObject? = objc_getAssociatedObject(self, &UIGestureRecognizerHandlerKey) as AnyObject?
-            if (nil == object) {
-                return nil
-            }
-            else {
+            if let object = objc_getAssociatedObject(self, &UIGestureRecognizerHandlerKey) {
                 return object as? UIGestureRecognizerHandler
             }
+            return nil
         }
         set {
             if nil == newValue {
-                objc_setAssociatedObject(self, &UIGestureRecognizerHandlerKey, newValue as AnyObject?, objc_AssociationPolicy.OBJC_ASSOCIATION_COPY_NONATOMIC)
+                objc_setAssociatedObject(self, &UIGestureRecognizerHandlerKey, nil, objc_AssociationPolicy.OBJC_ASSOCIATION_COPY_NONATOMIC)
             }
             else {
                 func setHandler(handler: @escaping UIGestureRecognizerHandler) {
@@ -55,14 +52,11 @@ extension UIGestureRecognizer {
     }
     
     func lbk_handleAction(_ recognizer: UIGestureRecognizer) {
-        let handler = recognizer.lbk_handler
-        if nil == handler { return }
-        
         let delay = self.lbk_handlerDelay
         let location = self.location(in: self.view)
         func block() {
             if !self.lbk_shouldHandleAction { return }
-            handler!(self, self.state, location)
+            recognizer.lbk_handler?(self, self.state, location)
         }
         
         self.lbk_shouldHandleAction = true
@@ -77,13 +71,10 @@ extension UIGestureRecognizer {
 
     fileprivate var lbk_handlerDelay: TimeInterval {
         get {
-            let object: NSNumber? = objc_getAssociatedObject(self, &UIGestureRecognizerHandlerDelayKey) as? NSNumber
-            if (nil == object) {
-                return 0
+            if let object = objc_getAssociatedObject(self, &UIGestureRecognizerHandlerDelayKey) {
+                return (object as! NSNumber).doubleValue
             }
-            else {
-                return object!.doubleValue
-            }
+            return 0
         }
         set {
             objc_setAssociatedObject(self, &UIGestureRecognizerHandlerDelayKey, newValue, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)

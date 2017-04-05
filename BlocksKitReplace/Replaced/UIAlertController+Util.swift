@@ -38,9 +38,7 @@ extension UIAlertController {
                 presenter!.present(viewControllerToPresent, animated: animated, completion: completion)
             }
             else {
-                if nil != completion {
-                    completion!()
-                }
+                completion?()
             }
         }
     }
@@ -49,10 +47,11 @@ extension UIAlertController {
     class func lbk_show(presenter: UIViewController?, title: String?, message: String?, buttonTitle: String?) -> AnyObject {
         return self.lbk_show(presenter: presenter, title: title, message: message, buttonTitle: buttonTitle, callback: nil)
     }
+    /** メッセージを表示するだけのUIAlertController(コールバック付き) */
     class func lbk_show(presenter: UIViewController?, title: String?, message: String?, buttonTitle: String?, callback: (() -> ())?) -> AnyObject {
         let alert = UIAlertController(title:title, message: message, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: buttonTitle, style: .default, handler: { (action) in
-            if nil != callback { callback!() }
+            callback?()
         }))
         self.maybePresent(presenter: presenter, viewControllerToPresent: alert, animated: true)
         return alert
@@ -62,20 +61,22 @@ extension UIAlertController {
     class func lbk_show(presenter: UIViewController?, title: String?, message: String?, cancelButtonTitle: String?, otherButtonTitle: String?, callback: ((_ sender: AnyObject, _ buttonIndex: NSInteger) -> ())?) -> AnyObject {
         return self.lbk_show(presenter: presenter, title: title, message: message, cancelButtonTitle: cancelButtonTitle, otherButtonTitles: nil != otherButtonTitle ? [otherButtonTitle!] : nil, delayActiveTime: 0, callback: callback)
     }
+    /** cancelボタン、複数のotherボタンのUIAlertController */
     class func lbk_show(presenter: UIViewController?, title: String?, message: String?, cancelButtonTitle: String?, otherButtonTitles: [String]?, callback: ((_ sender: AnyObject, _ buttonIndex: NSInteger) -> ())?) -> AnyObject {
         return self.lbk_show(presenter: presenter, title: title, message: message, cancelButtonTitle: cancelButtonTitle, otherButtonTitles: otherButtonTitles, delayActiveTime: 0, callback: callback)
     }
     
-    /** otherButtonを一定時間後に有効にするUIAlertController */
+    /** otherボタンを一定時間後に有効にするUIAlertController */
     class func lbk_show(presenter: UIViewController?, title: String?, message: String?, cancelButtonTitle: String?, otherButtonTitle: String?, delayActiveTime: TimeInterval, callback: ((_ sender: AnyObject, _ buttonIndex: NSInteger) -> ())?) -> AnyObject {
         return self.lbk_show(presenter: presenter, title: title, message: message, cancelButtonTitle: cancelButtonTitle, otherButtonTitles: nil != otherButtonTitle ? [otherButtonTitle!] : nil, delayActiveTime: delayActiveTime, callback: callback)
     }
+    /** 複数のotherボタンを一定時間後に有効にするUIAlertController */
     class func lbk_show(presenter: UIViewController?, title: String?, message: String?, cancelButtonTitle: String?, otherButtonTitles: [String]?, delayActiveTime: TimeInterval, callback: ((_ sender: AnyObject, _ buttonIndex: NSInteger) -> ())?) -> AnyObject {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
         weak var w = alert
         alert.addAction(UIAlertAction(title: cancelButtonTitle, style: .default, handler: { (action) in
             guard let strong = w else { return }
-            if nil != callback { callback!(strong, 0) }
+            callback?(strong, 0)
         }))
         var loginActions: [UIAlertAction] = []
         if nil != otherButtonTitles {
@@ -87,7 +88,7 @@ extension UIAlertController {
                 }
                 let loginAction = UIAlertAction(title: otherButtonTitle, style: style, handler: { (action) in
                     guard let strong = w else { return }
-                    if nil != callback { callback!(strong, index + 1) }
+                    callback?(strong, index + 1)
                 })
                 alert.addAction(loginAction)
                 loginActions.append(loginAction)
@@ -135,11 +136,11 @@ extension UIAlertController {
         weak var w = alert
         alert.addAction(UIAlertAction(title: cancelButtonTitle, style: .default, handler: { (action) in
             guard let strong = w else { return }
-            if nil != callback { callback!(strong, 0, nil) }
+            callback?(strong, 0, nil)
         }))
         alert.addAction(UIAlertAction(title: otherButtonTitle, style: .default, handler: { (action) in
             guard let strong = w else { return }
-            if nil != callback { callback!(strong, 1, strong.textField?.text) }
+            callback?(strong, 1, strong.textField?.text)
         }))
         alert.addTextField(configurationHandler: { (textField) in
             textField.text = text
@@ -154,46 +155,6 @@ extension UIAlertController {
     
     public var textField: UITextField? {
         return self.textFields?.first
-    }
-
-    //MARK:- Private Properties
-    
-    fileprivate var lbk_callback: UIAlertControllerCallback? {
-        get {
-            let object: AnyObject? = objc_getAssociatedObject(self, &UIAlertControllerCallbackKey) as AnyObject?
-            if (nil == object) { return nil }
-            return object as? UIAlertControllerCallback
-        }
-        set {
-            if nil == newValue {
-                objc_setAssociatedObject(self, &UIAlertControllerCallbackKey, newValue as AnyObject?, objc_AssociationPolicy.OBJC_ASSOCIATION_COPY_NONATOMIC)
-            }
-            else {
-                func setHandler(handler: @escaping UIAlertControllerCallback) {
-                    objc_setAssociatedObject(self, &UIAlertControllerCallbackKey, handler as! AnyObject, objc_AssociationPolicy.OBJC_ASSOCIATION_COPY_NONATOMIC)
-                }
-                setHandler(handler: newValue!)
-            }
-        }
-    }
-    
-    fileprivate var lbk_textInputCallback: UIAlertControllerTextInputCallback? {
-        get {
-            let object: AnyObject? = objc_getAssociatedObject(self, &UIAlertControllerTextInputCallbackKey) as AnyObject?
-            if (nil == object) { return nil }
-            return object as? UIAlertControllerTextInputCallback
-        }
-        set {
-            if nil == newValue {
-                objc_setAssociatedObject(self, &UIAlertControllerTextInputCallbackKey, newValue as AnyObject?, objc_AssociationPolicy.OBJC_ASSOCIATION_COPY_NONATOMIC)
-            }
-            else {
-                func setHandler(handler: @escaping UIAlertControllerTextInputCallback) {
-                    objc_setAssociatedObject(self, &UIAlertControllerTextInputCallbackKey, handler as! AnyObject, objc_AssociationPolicy.OBJC_ASSOCIATION_COPY_NONATOMIC)
-                }
-                setHandler(handler: newValue!)
-            }
-        }
     }
     
 }
