@@ -109,12 +109,12 @@
 		2791FFB01E7919EF00635513 /* Replaced */ = {
 			isa = PBXGroup;
 			children = (
-				2791FFB21E791A1700635513 /* UIBarButtonItem+Util.swift */,
 				2791FFB41E79452700635513 /* NSArray+Util.swift */,
-				278D52941E7B767300E4D93F /* UIGestureRecognizer+Util.swift */,
 				278D52981E7B8F5800E4D93F /* NSTimer+Util.swift */,
-				278D529C1E7BAEB200E4D93F /* UIControl+Util.swift */,
 				27D24C551E89028F00E84197 /* UIAlertController+Util.swift */,
+				2791FFB21E791A1700635513 /* UIBarButtonItem+Util.swift */,
+				278D529C1E7BAEB200E4D93F /* UIControl+Util.swift */,
+				278D52941E7B767300E4D93F /* UIGestureRecognizer+Util.swift */,
 			);
 			name = Replaced;
 			sourceTree = "<group>";

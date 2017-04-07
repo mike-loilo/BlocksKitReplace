@@ -74,7 +74,7 @@ extension UIAlertController {
     class func lbk_show(presenter: UIViewController?, title: String?, message: String?, cancelButtonTitle: String?, otherButtonTitles: [String]?, delayActiveTime: TimeInterval, callback: ((_ sender: AnyObject, _ buttonIndex: NSInteger) -> ())?) -> AnyObject {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
         weak var w = alert
-        alert.addAction(UIAlertAction(title: cancelButtonTitle, style: .default, handler: { (action) in
+        alert.addAction(UIAlertAction(title: cancelButtonTitle, style: .cancel, handler: { (action) in
             guard let strong = w else { return }
             callback?(strong, 0)
         }))
@@ -134,7 +134,7 @@ extension UIAlertController {
         
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
         weak var w = alert
-        alert.addAction(UIAlertAction(title: cancelButtonTitle, style: .default, handler: { (action) in
+        alert.addAction(UIAlertAction(title: cancelButtonTitle, style: .cancel, handler: { (action) in
             guard let strong = w else { return }
             callback?(strong, 0, nil)
         }))
