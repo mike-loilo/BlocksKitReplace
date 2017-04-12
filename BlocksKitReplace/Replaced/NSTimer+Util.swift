@@ -10,6 +10,7 @@ import Foundation
 
 extension Timer {
 
+    @discardableResult
     class func lbk_scheduledTimer(timeInterval: TimeInterval, block: @escaping (Timer) -> (), repeats: Bool) -> Timer {
         return self.scheduledTimer(timeInterval: timeInterval, target: self, selector: #selector(Timer.lbk_executeBlockFromTimer(aTimer:)), userInfo: block, repeats: repeats)
     }
