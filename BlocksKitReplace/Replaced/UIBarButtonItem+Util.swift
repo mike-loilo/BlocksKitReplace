@@ -16,20 +16,28 @@ extension UIBarButtonItem {
     fileprivate var lbk_handler: UIBarButtonItemHandler? {
         get {
             if let object = objc_getAssociatedObject(self, &UIBarButtonItemHandlerKey) {
-                return object as? UIBarButtonItemHandler
+                #if swift(>=3.1)
+                    return unsafeBitCast(UnsafeRawPointer(Unmanaged<AnyObject>.passUnretained(object as AnyObject).toOpaque()), to: UIBarButtonItemHandler.self)
+                #else
+                    return object as? UIBarButtonItemHandler
+                #endif
             }
             return nil
         }
         set {
-            if nil == newValue {
-                objc_setAssociatedObject(self, &UIBarButtonItemHandlerKey, nil, objc_AssociationPolicy.OBJC_ASSOCIATION_COPY_NONATOMIC)
-            }
-            else {
-                func setHandler(handler: @escaping UIBarButtonItemHandler) {
-                    objc_setAssociatedObject(self, &UIBarButtonItemHandlerKey, handler as! AnyObject, objc_AssociationPolicy.OBJC_ASSOCIATION_COPY_NONATOMIC)
+            #if swift(>=3.1)
+                objc_setAssociatedObject(self, &UIBarButtonItemHandlerKey, newValue, objc_AssociationPolicy.OBJC_ASSOCIATION_COPY_NONATOMIC)
+            #else
+                if nil == newValue {
+                    objc_setAssociatedObject(self, &UIBarButtonItemHandlerKey, nil, objc_AssociationPolicy.OBJC_ASSOCIATION_COPY_NONATOMIC)
                 }
-                setHandler(handler: newValue!)
-            }
+                else {
+                    func setHandler(handler: @escaping UIBarButtonItemHandler) {
+                        objc_setAssociatedObject(self, &UIBarButtonItemHandlerKey, handler as! AnyObject, objc_AssociationPolicy.OBJC_ASSOCIATION_COPY_NONATOMIC)
+                    }
+                    setHandler(handler: newValue!)
+                }
+            #endif
         }
     }
     

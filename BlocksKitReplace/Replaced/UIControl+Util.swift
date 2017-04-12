@@ -17,20 +17,28 @@ extension UIControl {
     fileprivate var lbk_handler: UIControlHandler? {
         get {
             if let object = objc_getAssociatedObject(self, &UIControlHandlerKey) {
-                return object as? UIControlHandler
+                #if swift(>=3.1)
+                    return unsafeBitCast(UnsafeRawPointer(Unmanaged<AnyObject>.passUnretained(object as AnyObject).toOpaque()), to: UIControlHandler.self)
+                #else
+                    return object as? UIControlHandler
+                #endif
             }
             return nil
         }
         set {
-            if nil == newValue {
-                objc_setAssociatedObject(self, &UIControlHandlerKey, nil, objc_AssociationPolicy.OBJC_ASSOCIATION_COPY_NONATOMIC)
-            }
-            else {
-                func setHandler(handler: @escaping UIControlHandler) {
-                    objc_setAssociatedObject(self, &UIControlHandlerKey, handler as! AnyObject, objc_AssociationPolicy.OBJC_ASSOCIATION_COPY_NONATOMIC)
+            #if swift(>=3.1)
+                objc_setAssociatedObject(self, &UIControlHandlerKey, newValue, objc_AssociationPolicy.OBJC_ASSOCIATION_COPY_NONATOMIC)
+            #else
+                if nil == newValue {
+                    objc_setAssociatedObject(self, &UIControlHandlerKey, nil, objc_AssociationPolicy.OBJC_ASSOCIATION_COPY_NONATOMIC)
                 }
-                setHandler(handler: newValue!)
-            }
+                else {
+                    func setHandler(handler: @escaping UIControlHandler) {
+                        objc_setAssociatedObject(self, &UIControlHandlerKey, handler as! AnyObject, objc_AssociationPolicy.OBJC_ASSOCIATION_COPY_NONATOMIC)
+                    }
+                    setHandler(handler: newValue!)
+                }
+            #endif
         }
     }
     

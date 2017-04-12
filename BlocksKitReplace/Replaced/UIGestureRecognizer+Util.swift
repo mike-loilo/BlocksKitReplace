@@ -18,20 +18,28 @@ extension UIGestureRecognizer {
     fileprivate var lbk_handler: UIGestureRecognizerHandler? {
         get {
             if let object = objc_getAssociatedObject(self, &UIGestureRecognizerHandlerKey) {
-                return object as? UIGestureRecognizerHandler
+                #if swift(>=3.1)
+                    return unsafeBitCast(UnsafeRawPointer(Unmanaged<AnyObject>.passUnretained(object as AnyObject).toOpaque()), to: UIGestureRecognizerHandler.self)
+                #else
+                    return object as? UIGestureRecognizerHandler
+                #endif
             }
             return nil
         }
         set {
-            if nil == newValue {
-                objc_setAssociatedObject(self, &UIGestureRecognizerHandlerKey, nil, objc_AssociationPolicy.OBJC_ASSOCIATION_COPY_NONATOMIC)
-            }
-            else {
-                func setHandler(handler: @escaping UIGestureRecognizerHandler) {
-                    objc_setAssociatedObject(self, &UIGestureRecognizerHandlerKey, handler as! AnyObject, objc_AssociationPolicy.OBJC_ASSOCIATION_COPY_NONATOMIC)
+            #if swift(>=3.1)
+                objc_setAssociatedObject(self, &UIGestureRecognizerHandlerKey, newValue, objc_AssociationPolicy.OBJC_ASSOCIATION_COPY_NONATOMIC)
+            #else
+                if nil == newValue {
+                    objc_setAssociatedObject(self, &UIGestureRecognizerHandlerKey, nil, objc_AssociationPolicy.OBJC_ASSOCIATION_COPY_NONATOMIC)
                 }
-                setHandler(handler: newValue!)
-            }
+                else {
+                    func setHandler(handler: @escaping UIGestureRecognizerHandler) {
+                        objc_setAssociatedObject(self, &UIGestureRecognizerHandlerKey, handler as! AnyObject, objc_AssociationPolicy.OBJC_ASSOCIATION_COPY_NONATOMIC)
+                    }
+                    setHandler(handler: newValue!)
+                }
+            #endif
         }
     }
     
