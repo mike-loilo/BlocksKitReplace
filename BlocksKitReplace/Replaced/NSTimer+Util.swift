@@ -11,15 +11,15 @@ import Foundation
 extension Timer {
 
     @discardableResult
-    class func lbk_scheduledTimer(timeInterval: TimeInterval, block: @escaping (Timer) -> (), repeats: Bool) -> Timer {
+    static func lbk_scheduledTimer(timeInterval: TimeInterval, block: @escaping (Timer) -> (), repeats: Bool) -> Timer {
         return self.scheduledTimer(timeInterval: timeInterval, target: self, selector: #selector(Timer.lbk_executeBlockFromTimer(aTimer:)), userInfo: block, repeats: repeats)
     }
     
-    class func lbk_timer(timeInterval: TimeInterval, block: @escaping (Timer) -> (), repeats: Bool) -> Timer {
+    static func lbk_timer(timeInterval: TimeInterval, block: @escaping (Timer) -> (), repeats: Bool) -> Timer {
         return Timer.init(timeInterval: timeInterval, target: self, selector: #selector(Timer.lbk_executeBlockFromTimer(aTimer:)), userInfo: block, repeats: repeats)
     }
     
-    class func lbk_executeBlockFromTimer(aTimer: Timer) {
+    static func lbk_executeBlockFromTimer(aTimer: Timer) {
         let block = aTimer.userInfo as! ((Timer) -> ())?
         block?(aTimer)
     }

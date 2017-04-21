@@ -13,7 +13,7 @@ typealias UIBarButtonItemHandler = @convention(block) (_ sender: UIBarButtonItem
 
 extension UIBarButtonItem {
     
-    fileprivate var lbk_handler: UIBarButtonItemHandler? {
+    private var lbk_handler: UIBarButtonItemHandler? {
         get {
             if let object = objc_getAssociatedObject(self, &UIBarButtonItemHandlerKey) {
                 #if swift(>=3.1)
@@ -41,28 +41,28 @@ extension UIBarButtonItem {
         }
     }
     
-    public class func lbk_item(image: UIImage?, style: UIBarButtonItemStyle, handler: ((UIBarButtonItem) -> ())?) -> UIBarButtonItem {
+    static func lbk_item(image: UIImage?, style: UIBarButtonItemStyle, handler: ((UIBarButtonItem) -> ())?) -> UIBarButtonItem {
         let item = UIBarButtonItem(image: image, style: style, target: nil, action: #selector(UIBarButtonItem.lbk_tapAction(_:)))
         item.target = item
         item.lbk_handler = handler
         return item
     }
     
-    public class func lbk_item(image: UIImage?, landscapeImagePhone: UIImage?, style: UIBarButtonItemStyle, handler: ((UIBarButtonItem) -> ())?) -> UIBarButtonItem {
+    static func lbk_item(image: UIImage?, landscapeImagePhone: UIImage?, style: UIBarButtonItemStyle, handler: ((UIBarButtonItem) -> ())?) -> UIBarButtonItem {
         let item = UIBarButtonItem(image: image, landscapeImagePhone: landscapeImagePhone, style: style, target: nil, action: #selector(UIBarButtonItem.lbk_tapAction(_:)))
         item.target = item
         item.lbk_handler = handler
         return item
     }
     
-    public class func lbk_item(barButtonSystemItem: UIBarButtonSystemItem, handler: ((UIBarButtonItem) -> ())?) -> UIBarButtonItem {
+    static func lbk_item(barButtonSystemItem: UIBarButtonSystemItem, handler: ((UIBarButtonItem) -> ())?) -> UIBarButtonItem {
         let item = UIBarButtonItem(barButtonSystemItem: barButtonSystemItem, target: nil, action: #selector(UIBarButtonItem.lbk_tapAction(_:)))
         item.target = item
         item.lbk_handler = handler
         return item
     }
     
-    public class func lbk_item(title: String?, style: UIBarButtonItemStyle, handler: ((UIBarButtonItem) -> ())?) -> UIBarButtonItem {
+    static func lbk_item(title: String?, style: UIBarButtonItemStyle, handler: ((UIBarButtonItem) -> ())?) -> UIBarButtonItem {
         let item = UIBarButtonItem(title: title, style: style, target: nil, action: #selector(UIBarButtonItem.lbk_tapAction(_:)))
         item.target = item
         item.lbk_handler = handler

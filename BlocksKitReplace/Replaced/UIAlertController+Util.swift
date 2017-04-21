@@ -8,11 +8,6 @@
 
 import UIKit
 
-var UIAlertControllerCallbackKey: UInt8 = 0
-var UIAlertControllerTextInputCallbackKey: UInt8 = 0
-typealias UIAlertControllerCallback = @convention(block) (_ sender: AnyObject, _ buttonIndex: NSInteger) -> ()
-typealias UIAlertControllerTextInputCallback = @convention(block) (_ sender: AnyObject, _ buttonIndex: NSInteger, _ text: String?) -> ()
-
 /** 元々、UIAlertViewを拡張して、UIAlertControllerを扱えるようにしていたが、
  * Swiftで実装すると、ボタンの有効化を遅延させたり、入力用のテキストボックスを開いたりするときにうまくいかない
  * iOS8以降はUIAlertView自体が非推奨になっていることもあり、UIAlertControllerの拡張として実装する
@@ -25,7 +20,7 @@ typealias UIAlertControllerTextInputCallback = @convention(block) (_ sender: Any
 extension UIAlertController {
 
     /** presenterがnilの場合は最前面のUIViewControllerを探して表示を試みる */
-    fileprivate class func maybePresent(presenter: UIViewController?, viewControllerToPresent: UIViewController, animated: Bool, completion: (() -> Swift.Void)? = nil) {
+    private class func maybePresent(presenter: UIViewController?, viewControllerToPresent: UIViewController, animated: Bool, completion: (() -> Swift.Void)? = nil) {
         if nil != presenter {
             presenter!.present(viewControllerToPresent, animated: animated, completion: completion)
         }
@@ -45,12 +40,12 @@ extension UIAlertController {
     
     /** メッセージを表示するだけのUIAlertController */
     @discardableResult
-    class func lbk_show(presenter: UIViewController?, title: String?, message: String?, buttonTitle: String?) -> AnyObject {
+    static func lbk_show(presenter: UIViewController?, title: String?, message: String?, buttonTitle: String?) -> AnyObject {
         return self.lbk_show(presenter: presenter, title: title, message: message, buttonTitle: buttonTitle, callback: nil)
     }
     /** メッセージを表示するだけのUIAlertController(コールバック付き) */
     @discardableResult
-    class func lbk_show(presenter: UIViewController?, title: String?, message: String?, buttonTitle: String?, callback: (() -> ())?) -> AnyObject {
+    static func lbk_show(presenter: UIViewController?, title: String?, message: String?, buttonTitle: String?, callback: (() -> ())?) -> AnyObject {
         let alert = UIAlertController(title:title, message: message, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: buttonTitle, style: .default, handler: { (action) in
             callback?()
@@ -61,23 +56,23 @@ extension UIAlertController {
 
     /** cancel/other2つボタンのUIAlertController */
     @discardableResult
-    class func lbk_show(presenter: UIViewController?, title: String?, message: String?, cancelButtonTitle: String?, otherButtonTitle: String?, callback: ((_ sender: AnyObject, _ buttonIndex: NSInteger) -> ())?) -> AnyObject {
+    static func lbk_show(presenter: UIViewController?, title: String?, message: String?, cancelButtonTitle: String?, otherButtonTitle: String?, callback: ((_ sender: AnyObject, _ buttonIndex: NSInteger) -> ())?) -> AnyObject {
         return self.lbk_show(presenter: presenter, title: title, message: message, cancelButtonTitle: cancelButtonTitle, otherButtonTitles: nil != otherButtonTitle ? [otherButtonTitle!] : nil, delayActiveTime: 0, callback: callback)
     }
     /** cancelボタン、複数のotherボタンのUIAlertController */
     @discardableResult
-    class func lbk_show(presenter: UIViewController?, title: String?, message: String?, cancelButtonTitle: String?, otherButtonTitles: [String]?, callback: ((_ sender: AnyObject, _ buttonIndex: NSInteger) -> ())?) -> AnyObject {
+    static func lbk_show(presenter: UIViewController?, title: String?, message: String?, cancelButtonTitle: String?, otherButtonTitles: [String]?, callback: ((_ sender: AnyObject, _ buttonIndex: NSInteger) -> ())?) -> AnyObject {
         return self.lbk_show(presenter: presenter, title: title, message: message, cancelButtonTitle: cancelButtonTitle, otherButtonTitles: otherButtonTitles, delayActiveTime: 0, callback: callback)
     }
     
     /** otherボタンを一定時間後に有効にするUIAlertController */
     @discardableResult
-    class func lbk_show(presenter: UIViewController?, title: String?, message: String?, cancelButtonTitle: String?, otherButtonTitle: String?, delayActiveTime: TimeInterval, callback: ((_ sender: AnyObject, _ buttonIndex: NSInteger) -> ())?) -> AnyObject {
+    static func lbk_show(presenter: UIViewController?, title: String?, message: String?, cancelButtonTitle: String?, otherButtonTitle: String?, delayActiveTime: TimeInterval, callback: ((_ sender: AnyObject, _ buttonIndex: NSInteger) -> ())?) -> AnyObject {
         return self.lbk_show(presenter: presenter, title: title, message: message, cancelButtonTitle: cancelButtonTitle, otherButtonTitles: nil != otherButtonTitle ? [otherButtonTitle!] : nil, delayActiveTime: delayActiveTime, callback: callback)
     }
     /** 複数のotherボタンを一定時間後に有効にするUIAlertController */
     @discardableResult
-    class func lbk_show(presenter: UIViewController?, title: String?, message: String?, cancelButtonTitle: String?, otherButtonTitles: [String]?, delayActiveTime: TimeInterval, callback: ((_ sender: AnyObject, _ buttonIndex: NSInteger) -> ())?) -> AnyObject {
+    static func lbk_show(presenter: UIViewController?, title: String?, message: String?, cancelButtonTitle: String?, otherButtonTitles: [String]?, delayActiveTime: TimeInterval, callback: ((_ sender: AnyObject, _ buttonIndex: NSInteger) -> ())?) -> AnyObject {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
         weak var w = alert
         alert.addAction(UIAlertAction(title: cancelButtonTitle, style: .cancel, handler: { (action) in
@@ -121,7 +116,7 @@ extension UIAlertController {
     
     /** テキスト入力UIAlertController */
     @discardableResult
-    class func lbk_showTextInput(presenter: UIViewController?, title: String?, message: String?, cancelButtonTitle: String?, otherButtonTitle: String?, text: String?, placeholder: String?, secureTextEntry: Bool, keyboardType: UIKeyboardType, limitation: UInt, callback: ((_ sender: AnyObject, _ buttonIndex: NSInteger, _ text: String?) -> ())?) -> AnyObject {
+    static func lbk_showTextInput(presenter: UIViewController?, title: String?, message: String?, cancelButtonTitle: String?, otherButtonTitle: String?, text: String?, placeholder: String?, secureTextEntry: Bool, keyboardType: UIKeyboardType, limitation: UInt, callback: ((_ sender: AnyObject, _ buttonIndex: NSInteger, _ text: String?) -> ())?) -> AnyObject {
         // UIAlertControllerでのテキスト入力中に文字数制限をするため、UITextFieldTextDidChangeNotificationで実現する
         weak var _textField: UITextField? = nil
         NotificationCenter.default.addObserver(forName: NSNotification.Name.UITextFieldTextDidChange, object: nil, queue: nil) { (note) in

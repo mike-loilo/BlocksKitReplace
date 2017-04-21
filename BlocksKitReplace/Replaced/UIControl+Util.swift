@@ -14,7 +14,7 @@ typealias UIControlHandler = @convention(block) (_ sender: AnyObject) -> ()
 
 extension UIControl {
 
-    fileprivate var lbk_handler: UIControlHandler? {
+    private var lbk_handler: UIControlHandler? {
         get {
             if let object = objc_getAssociatedObject(self, &UIControlHandlerKey) {
                 #if swift(>=3.1)

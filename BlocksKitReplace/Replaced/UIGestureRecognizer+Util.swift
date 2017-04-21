@@ -15,7 +15,7 @@ typealias UIGestureRecognizerHandler = @convention(block) (_ sender: UIGestureRe
 
 extension UIGestureRecognizer {
 
-    fileprivate var lbk_handler: UIGestureRecognizerHandler? {
+    private var lbk_handler: UIGestureRecognizerHandler? {
         get {
             if let object = objc_getAssociatedObject(self, &UIGestureRecognizerHandlerKey) {
                 #if swift(>=3.1)
@@ -43,7 +43,7 @@ extension UIGestureRecognizer {
         }
     }
     
-    public class func lbk_recognizer(handler: ((UIGestureRecognizer, UIGestureRecognizerState, CGPoint) -> ())?, delay: TimeInterval) -> AnyObject {
+    static func lbk_recognizer(handler: ((UIGestureRecognizer, UIGestureRecognizerState, CGPoint) -> ())?, delay: TimeInterval) -> AnyObject {
         let recognizer = self.init()
         recognizer.addTarget(recognizer, action: #selector(UIGestureRecognizer.lbk_handleAction(_:)))
         recognizer.lbk_handler = handler
@@ -51,7 +51,7 @@ extension UIGestureRecognizer {
         return recognizer
     }
     
-    public class func lbk_recognizer(handler: ((UIGestureRecognizer, UIGestureRecognizerState, CGPoint) -> ())?) -> AnyObject {
+    static func lbk_recognizer(handler: ((UIGestureRecognizer, UIGestureRecognizerState, CGPoint) -> ())?) -> AnyObject {
         let recognizer = self.init()
         recognizer.addTarget(recognizer, action: #selector(UIGestureRecognizer.lbk_handleAction(_:)))
         recognizer.lbk_handler = handler
@@ -77,7 +77,7 @@ extension UIGestureRecognizer {
         DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + Double(Int64(delay * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC), execute: block)
     }
 
-    fileprivate var lbk_handlerDelay: TimeInterval {
+    private var lbk_handlerDelay: TimeInterval {
         get {
             if let object = objc_getAssociatedObject(self, &UIGestureRecognizerHandlerDelayKey) {
                 return (object as! NSNumber).doubleValue
@@ -89,7 +89,7 @@ extension UIGestureRecognizer {
         }
     }
     
-    fileprivate var lbk_shouldHandleAction: Bool {
+    private var lbk_shouldHandleAction: Bool {
         get {
             return objc_getAssociatedObject(self, &UIGestureRecognizerShouldHandleActionKey) as? Bool ?? false
         }
