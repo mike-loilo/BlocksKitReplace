@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		2760306D1EDD10CC00B22D81 /* UIAlertView+Util.m in Sources */ = {isa = PBXBuildFile; fileRef = 2760306C1EDD10CC00B22D81 /* UIAlertView+Util.m */; };
 		278D52951E7B767300E4D93F /* UIGestureRecognizer+Util.swift in Sources */ = {isa = PBXBuildFile; fileRef = 278D52941E7B767300E4D93F /* UIGestureRecognizer+Util.swift */; };
 		278D52991E7B8F5800E4D93F /* NSTimer+Util.swift in Sources */ = {isa = PBXBuildFile; fileRef = 278D52981E7B8F5800E4D93F /* NSTimer+Util.swift */; };
 		278D529D1E7BAEB200E4D93F /* UIControl+Util.swift in Sources */ = {isa = PBXBuildFile; fileRef = 278D529C1E7BAEB200E4D93F /* UIControl+Util.swift */; };
@@ -26,8 +25,6 @@
 
 /* Begin PBXFileReference section */
 		0E963CC7F05C23DFACA6381F /* libPods-BlocksKitReplace.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-BlocksKitReplace.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		2760306B1EDD10CC00B22D81 /* UIAlertView+Util.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIAlertView+Util.h"; path = "Utilities/UIAlertView+Util.h"; sourceTree = "<group>"; };
-		2760306C1EDD10CC00B22D81 /* UIAlertView+Util.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIAlertView+Util.m"; path = "Utilities/UIAlertView+Util.m"; sourceTree = "<group>"; };
 		278D52941E7B767300E4D93F /* UIGestureRecognizer+Util.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "UIGestureRecognizer+Util.swift"; path = "Replaced/UIGestureRecognizer+Util.swift"; sourceTree = "<group>"; };
 		278D52981E7B8F5800E4D93F /* NSTimer+Util.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "NSTimer+Util.swift"; path = "Replaced/NSTimer+Util.swift"; sourceTree = "<group>"; };
 		278D529C1E7BAEB200E4D93F /* UIControl+Util.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "UIControl+Util.swift"; path = "Replaced/UIControl+Util.swift"; sourceTree = "<group>"; };
@@ -63,15 +60,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		2760306A1EDD10B700B22D81 /* Utilities */ = {
-			isa = PBXGroup;
-			children = (
-				2760306B1EDD10CC00B22D81 /* UIAlertView+Util.h */,
-				2760306C1EDD10CC00B22D81 /* UIAlertView+Util.m */,
-			);
-			name = Utilities;
-			sourceTree = "<group>";
-		};
 		2791FF8A1E79133600635513 = {
 			isa = PBXGroup;
 			children = (
@@ -106,7 +94,6 @@
 				2791FFA41E79133600635513 /* LaunchScreen.storyboard */,
 				2791FFA71E79133600635513 /* Info.plist */,
 				2791FF961E79133600635513 /* Supporting Files */,
-				2760306A1EDD10B700B22D81 /* Utilities */,
 			);
 			path = BlocksKitReplace;
 			sourceTree = "<group>";
@@ -273,7 +260,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2760306D1EDD10CC00B22D81 /* UIAlertView+Util.m in Sources */,
 				278D52991E7B8F5800E4D93F /* NSTimer+Util.swift in Sources */,
 				2791FF9E1E79133600635513 /* ViewController.m in Sources */,
 				2791FF9B1E79133600635513 /* AppDelegate.m in Sources */,

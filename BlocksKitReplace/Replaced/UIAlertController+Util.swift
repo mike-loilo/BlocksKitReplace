@@ -8,9 +8,157 @@
 
 import UIKit
 
+#if true
 /** 現行の実装ではUIAlertControllerを使っていると、スクリーンロック画面・画面配信受信画面で問題が発生するため、一時的にUIAlertViewで代用する。
  * 将来的にはUIAlertControllerへ移行するため、インターフェースは変えずにUIAlertViewを使う形にする
  */
+
+var UIAlertViewDisableFirstOtherButtonKey: UInt8 = 0
+var UIAlertViewCallbackKey: UInt8 = 0
+var UIAlertViewTextInputCallbackKey: UInt8 = 0
+typealias UIAlertViewCallback = @convention(block) (_ sender: Any, _ buttonIndex: Int) -> ()
+typealias UIAlertViewTextInputCallback = @convention(block) (_ sender: Any, _ buttonIndex: Int, _ text: String?) -> ()
+extension UIAlertView: UIAlertViewDelegate {
+    
+    /** メッセージを表示するだけのUIAlertView */
+    @discardableResult
+    static func lbk_show(withTitle: String?, message: String?, buttonTitle: String?, callback: (() -> ())?) -> Any {
+        let alert = UIAlertView(title: withTitle, message: message, delegate: nil, cancelButtonTitle: buttonTitle)
+        alert.lbk_callback = { (sender, buttonIndex) in
+            if nil != callback { callback!() }
+        }
+        alert.delegate = alert
+        alert.show()
+        return alert
+    }
+    
+    /** otherButtonを一定時間後に有効にするUIAlertView */
+    @discardableResult
+    static func lbk_show(withTitle: String?, message: String?, cancelButtonTitle: String?, otherButtonTitles: [String]?, delayActiveTime: TimeInterval, callback: ((_ sender: Any, _ buttonIndex: Int) -> ())?) -> Any {
+        return UIAlertView(title: withTitle, message: message, cancelButtonTitle: cancelButtonTitle, otherButtonTitles: otherButtonTitles, delayActiveTime: delayActiveTime, callback: callback)
+    }
+    
+    /** テキスト入力UIAlertView */
+    @discardableResult
+    static func lbk_showTextInput(withTitle: String?, message: String?, cancelButtonTitle: String?, otherButtonTitle: String?, text: String?, placeholder: String?, secureTextEntry: Bool, keyboardType: UIKeyboardType, limitation: UInt, callback: ((_ sender: Any, _ buttonIndex: Int, _ text: String?) -> ())?) -> Any {
+        let alert = UIAlertView(title: nil != withTitle ? withTitle! : "", message: nil != message ? message! : "", delegate: nil, cancelButtonTitle: cancelButtonTitle, otherButtonTitles: nil != otherButtonTitle ? otherButtonTitle! : "")
+        alert.alertViewStyle = secureTextEntry ? .secureTextInput : .plainTextInput
+        if nil != alert.textField {
+            alert.textField!.text = text
+            alert.textField!.placeholder = placeholder
+            alert.textField!.keyboardType = keyboardType
+        }
+        alert.lbk_textInputCallback = callback
+        alert.delegate = alert
+        alert.show()
+        return alert
+    }
+    
+    private convenience init(title: String?, message: String?, cancelButtonTitle: String?, otherButtonTitles: [String]?, delayActiveTime: TimeInterval, callback: ((_ sender: Any, _ buttonIndex: Int) -> ())?) {
+        self.init(title: title, message: message, delegate: nil, cancelButtonTitle: cancelButtonTitle)
+        if nil != otherButtonTitles {
+            for otherButtonTitle in otherButtonTitles! {
+                self.addButton(withTitle: otherButtonTitle)
+            }
+        }
+        self.lbk_disableFirstOtherButton = 0 < delayActiveTime
+        self.lbk_callback = callback
+        self.delegate = self
+        self.show()
+        if 0 < delayActiveTime {
+            weak var w = self
+            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + Double(Int64(delayActiveTime * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC), execute: {
+                guard let strong = w else { return }
+                strong.dismiss(withClickedButtonIndex: 0, animated: false)
+                strong.lbk_disableFirstOtherButton = false
+                strong.show()
+            })
+        }
+    }
+    
+    public var textField: UITextField? {
+        return self.textField(at: 0)
+    }
+    
+    //MARK:- Private Properties
+    
+    private var lbk_disableFirstOtherButton: Bool {
+        get {
+            return objc_getAssociatedObject(self, &UIAlertViewDisableFirstOtherButtonKey) as? Bool ?? false
+        }
+        set {
+            objc_setAssociatedObject(self, &UIAlertViewDisableFirstOtherButtonKey, newValue, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        }
+    }
+    
+    private var lbk_callback: UIAlertViewCallback? {
+        get {
+            if let object = objc_getAssociatedObject(self, &UIAlertViewCallbackKey) {
+                #if swift(>=3.1)
+                    return unsafeBitCast(UnsafeRawPointer(Unmanaged<AnyObject>.passUnretained(object as AnyObject).toOpaque()), to: UIAlertViewCallback.self)
+                #else
+                    return object as? UIBarButtonItemHandler
+                #endif
+            }
+            return nil
+        }
+        set {
+            #if swift(>=3.1)
+                objc_setAssociatedObject(self, &UIAlertViewCallbackKey, newValue, objc_AssociationPolicy.OBJC_ASSOCIATION_COPY_NONATOMIC)
+            #else
+                if nil == newValue {
+                    objc_setAssociatedObject(self, &UIAlertViewCallbackKey, nil, objc_AssociationPolicy.OBJC_ASSOCIATION_COPY_NONATOMIC)
+                }
+                else {
+                    func setHandler(handler: @escaping UIAlertViewCallback) {
+                        objc_setAssociatedObject(self, &UIAlertViewCallbackKey, handler as! AnyObject, objc_AssociationPolicy.OBJC_ASSOCIATION_COPY_NONATOMIC)
+                    }
+                    setHandler(handler: newValue!)
+                }
+            #endif
+        }
+    }
+    
+    private var lbk_textInputCallback: UIAlertViewTextInputCallback? {
+        get {
+            if let object = objc_getAssociatedObject(self, &UIAlertViewTextInputCallbackKey) {
+                #if swift(>=3.1)
+                    return unsafeBitCast(UnsafeRawPointer(Unmanaged<AnyObject>.passUnretained(object as AnyObject).toOpaque()), to: UIAlertViewTextInputCallback.self)
+                #else
+                    return object as? UIBarButtonItemHandler
+                #endif
+            }
+            return nil
+        }
+        set {
+            #if swift(>=3.1)
+                objc_setAssociatedObject(self, &UIAlertViewTextInputCallbackKey, newValue, objc_AssociationPolicy.OBJC_ASSOCIATION_COPY_NONATOMIC)
+            #else
+                if nil == newValue {
+                    objc_setAssociatedObject(self, &UIAlertViewTextInputCallbackKey, nil, objc_AssociationPolicy.OBJC_ASSOCIATION_COPY_NONATOMIC)
+                }
+                else {
+                    func setHandler(handler: @escaping UIAlertViewTextInputCallback) {
+                        objc_setAssociatedObject(self, &UIAlertViewTextInputCallbackKey, handler as! AnyObject, objc_AssociationPolicy.OBJC_ASSOCIATION_COPY_NONATOMIC)
+                    }
+                    setHandler(handler: newValue!)
+                }
+            #endif
+        }
+    }
+    
+    //MARK:- UIAlertViewDelegate
+    
+    public func alertView(_ alertView: UIAlertView, clickedButtonAt buttonIndex: Int) {
+        alertView.lbk_callback?(alertView, buttonIndex)
+        alertView.lbk_textInputCallback?(alertView, buttonIndex, nil != alertView.textField ? alertView.textField!.text : nil)
+    }
+    
+    public func alertViewShouldEnableFirstOtherButton(_ alertView: UIAlertView) -> Bool {
+        return !alertView.lbk_disableFirstOtherButton
+    }
+}
+#endif
 
 /** 元々、UIAlertViewを拡張して、UIAlertControllerを扱えるようにしていたが、
  * Swiftで実装すると、ボタンの有効化を遅延させたり、入力用のテキストボックスを開いたりするときにうまくいかない
@@ -19,7 +167,6 @@ import UIKit
  * [UIAlertViewでの問題]
  * SwiftだとUIAlertViewDelegateのalertViewShouldEnableFirstOtherButtonが呼ばれないみたいなので、キャンセルボタン以外を一時的に無効にしておく処理が実現できない。
  * 仮にalertViewShouldEnableFirstOtherButtonが呼ばれるようになったとしても、ボタンを有効に戻すために一度閉じて開き直す処理が効かない。
- * 入力用のテキストボックスに関しては、alertViewStyleに.secureTextInputや.plainTextInputを設定しているにも関わらず表示されない。
  */
 extension UIAlertController {
 
