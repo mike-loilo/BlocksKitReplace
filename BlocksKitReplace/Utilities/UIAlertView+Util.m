@@ -11,7 +11,7 @@
 
 @implementation UIAlertView (Util)
 
-+ (id _Nonnull)showWithTitle:(NSString * _Nullable)title message:(NSString * _Nullable)message cancelButtonTitle:(NSString * _Nullable)cancelButtonTitle otherButtonTitles:(NSArray<NSString *> * _Nullable)otherButtonTitles delayActiveTime:(NSTimeInterval)delayActiveTime callback:(void (^ _Nullable)(id _Nonnull sender, NSInteger buttonIndex))callback
++ (id _Nonnull)lbk_showWithTitle:(NSString * _Nullable)title message:(NSString * _Nullable)message cancelButtonTitle:(NSString * _Nullable)cancelButtonTitle otherButtonTitles:(NSArray<NSString *> * _Nullable)otherButtonTitles delayActiveTime:(NSTimeInterval)delayActiveTime callback:(void (^ _Nullable)(id _Nonnull sender, NSInteger buttonIndex))callback
 {
     return [UIAlertView.alloc initAndShowWithTitle:title message:message cancelButtonTitle:cancelButtonTitle otherButtonTitles:otherButtonTitles delayActiveTime:delayActiveTime callback:callback];
 }
@@ -41,7 +41,7 @@
     return self;
 }
 
-+ (id _Nonnull)showTextInputWithTitle:(NSString * _Nullable)title message:(NSString * _Nullable)message cancelButtonTitle:(NSString * _Nullable)cancelButtonTitle otherButtonTitle:(NSString * _Nullable)otherButtonTitle text:(NSString * _Nullable)text placeholder:(NSString * _Nullable)placeholder secureTextEntry:(BOOL)secureTextEntry keyboardType:(UIKeyboardType)keyboardType limitation:(NSUInteger)limitation callback:(void (^ _Nullable)(id _Nonnull sender, NSInteger buttonIndex, NSString * _Nullable text))callback
++ (id _Nonnull)lbk_showTextInputWithTitle:(NSString * _Nullable)title message:(NSString * _Nullable)message cancelButtonTitle:(NSString * _Nullable)cancelButtonTitle otherButtonTitle:(NSString * _Nullable)otherButtonTitle text:(NSString * _Nullable)text placeholder:(NSString * _Nullable)placeholder secureTextEntry:(BOOL)secureTextEntry keyboardType:(UIKeyboardType)keyboardType limitation:(NSUInteger)limitation callback:(void (^ _Nullable)(id _Nonnull sender, NSInteger buttonIndex, NSString * _Nullable text))callback
 {
     // UIAlertViewでのテキスト入力中に文字数制限をするため、UITextFieldTextDidChangeNotificationで実現する
     __block __weak UITextField *_textField = nil;
@@ -71,7 +71,7 @@
     return alert;
 }
 
-+ (id _Nonnull)showWithTitle:(NSString * _Nullable)title message:(NSString * _Nullable)message buttonTitle:(NSString * _Nullable)buttonTitle callback:(void (^)())callback
++ (id _Nonnull)lbk_showWithTitle:(NSString * _Nullable)title message:(NSString * _Nullable)message buttonTitle:(NSString * _Nullable)buttonTitle callback:(void (^)())callback
 {
     UIAlertView *alert = [UIAlertView.alloc initWithTitle:title message:message delegate:self cancelButtonTitle:buttonTitle otherButtonTitles:nil, nil];
     alert.callback = callback;

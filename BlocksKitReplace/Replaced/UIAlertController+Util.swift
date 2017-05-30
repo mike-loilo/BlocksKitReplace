@@ -9,7 +9,7 @@
 import UIKit
 
 /** 現行の実装ではUIAlertControllerを使っていると、スクリーンロック画面・画面配信受信画面で問題が発生するため、一時的にUIAlertViewで代用する。
- * 将来的にはUIAlertControllerへ移行するため、I/Fは変えずにUIAlertViewを使う形にする
+ * 将来的にはUIAlertControllerへ移行するため、インターフェースは変えずにUIAlertViewを使う形にする
  */
 
 /** 元々、UIAlertViewを拡張して、UIAlertControllerを扱えるようにしていたが、
@@ -60,7 +60,7 @@ extension UIAlertController {
             self.maybePresent(presenter: presenter, viewControllerToPresent: alert, animated: true)
             return alert
         #else
-            return UIAlertView.show(withTitle: title, message: message, buttonTitle: buttonTitle, callback: callback)
+            return UIAlertView.lbk_show(withTitle: title, message: message, buttonTitle: buttonTitle, callback: callback)
         #endif
     }
 
@@ -125,7 +125,7 @@ extension UIAlertController {
             return alert
         #else
             // UIAlertViewが非推奨となったためか、遅延してボタンを有効にする処理が上手く動作しないので強制的に即時実行にする
-            return UIAlertView.show(withTitle: title, message: message, cancelButtonTitle: cancelButtonTitle, otherButtonTitles: otherButtonTitles, delayActiveTime: 0, callback: callback)
+            return UIAlertView.lbk_show(withTitle: title, message: message, cancelButtonTitle: cancelButtonTitle, otherButtonTitles: otherButtonTitles, delayActiveTime: 0, callback: callback)
         #endif
     }
     
@@ -170,7 +170,7 @@ extension UIAlertController {
             self.maybePresent(presenter: presenter, viewControllerToPresent: alert, animated: true)
             return alert
         #else
-            let alert = UIAlertView.showTextInput(withTitle: title, message: message, cancelButtonTitle: cancelButtonTitle, otherButtonTitle: otherButtonTitle, text: text, placeholder: placeholder, secureTextEntry: secureTextEntry, keyboardType: keyboardType, limitation: limitation, callback: { (sender, buttonIndex, text) in
+            let alert = UIAlertView.lbk_showTextInput(withTitle: title, message: message, cancelButtonTitle: cancelButtonTitle, otherButtonTitle: otherButtonTitle, text: text, placeholder: placeholder, secureTextEntry: secureTextEntry, keyboardType: keyboardType, limitation: limitation, callback: { (sender, buttonIndex, text) in
                 // UIAlertViewの場合は変換中のままOKしてしまうと文字数制限がうまく利かないみたいなので、確定した文字テキストに対して文字数制限をかける
                 var validText = text
                 if nil != validText && Int(limitation) < validText!.characters.count {
