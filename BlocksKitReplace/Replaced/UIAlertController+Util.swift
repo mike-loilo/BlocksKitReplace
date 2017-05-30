@@ -161,11 +161,11 @@ extension UIAlertView: UIAlertViewDelegate {
 #endif
 
 /** 元々、UIAlertViewを拡張して、UIAlertControllerを扱えるようにしていたが、
- * Swiftで実装すると、ボタンの有効化を遅延させたり、入力用のテキストボックスを開いたりするときにうまくいかない
+ * iOS8を非サポートにすると、ボタンの有効化を遅延させるときにうまくいかない
  * iOS8以降はUIAlertView自体が非推奨になっていることもあり、UIAlertControllerの拡張として実装する
  *
  * [UIAlertViewでの問題]
- * SwiftだとUIAlertViewDelegateのalertViewShouldEnableFirstOtherButtonが呼ばれないみたいなので、キャンセルボタン以外を一時的に無効にしておく処理が実現できない。
+ * iOS8が非サポートだとUIAlertViewDelegateのalertViewShouldEnableFirstOtherButtonが呼ばれないみたいなので、キャンセルボタン以外を一時的に無効にしておく処理が実現できない。
  * 仮にalertViewShouldEnableFirstOtherButtonが呼ばれるようになったとしても、ボタンを有効に戻すために一度閉じて開き直す処理が効かない。
  */
 extension UIAlertController {
