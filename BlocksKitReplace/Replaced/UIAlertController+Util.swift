@@ -8,7 +8,7 @@
 
 import UIKit
 
-#if true
+#if USE_UIALERTVIEW
 /** 現行の実装ではUIAlertControllerを使っていると、スクリーンロック画面・画面配信受信画面で問題が発生するため、一時的にUIAlertViewで代用する。
  * 将来的にはUIAlertControllerへ移行するため、インターフェースは変えずにUIAlertViewを使う形にする
  */
@@ -170,7 +170,8 @@ extension UIAlertView: UIAlertViewDelegate {
  */
 extension UIAlertController {
 
-    #if false
+    #if USE_UIALERTVIEW
+    #else
     /** presenterがnilの場合は最前面のUIViewControllerを探して表示を試みる */
     private class func maybePresent(presenter: UIViewController?, viewControllerToPresent: UIViewController, animated: Bool, completion: (() -> Swift.Void)? = nil) {
         if nil != presenter {
@@ -199,15 +200,15 @@ extension UIAlertController {
     /** メッセージを表示するだけのUIAlertController(コールバック付き) */
     @discardableResult
     static func lbk_show(presenter: UIViewController?, title: String?, message: String?, buttonTitle: String?, callback: (() -> ())?) -> Any {
-        #if false
+        #if USE_UIALERTVIEW
+            return UIAlertView.lbk_show(withTitle: title, message: message, buttonTitle: buttonTitle, callback: callback)
+        #else
             let alert = UIAlertController(title:title, message: message, preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: buttonTitle, style: .default, handler: { (action) in
                 callback?()
             }))
             self.maybePresent(presenter: presenter, viewControllerToPresent: alert, animated: true)
             return alert
-        #else
-            return UIAlertView.lbk_show(withTitle: title, message: message, buttonTitle: buttonTitle, callback: callback)
         #endif
     }
 
@@ -230,7 +231,10 @@ extension UIAlertController {
     /** 複数のotherボタンを一定時間後に有効にするUIAlertController */
     @discardableResult
     static func lbk_show(presenter: UIViewController?, title: String?, message: String?, cancelButtonTitle: String?, otherButtonTitles: [String]?, delayActiveTime: TimeInterval, callback: ((_ sender: Any, _ buttonIndex: Int) -> Void)?) -> Any {
-        #if false
+        #if USE_UIALERTVIEW
+            // UIAlertViewが非推奨となったためか、遅延してボタンを有効にする処理が上手く動作しないので強制的に即時実行にする
+            return UIAlertView.lbk_show(withTitle: title, message: message, cancelButtonTitle: cancelButtonTitle, otherButtonTitles: otherButtonTitles, delayActiveTime: 0, callback: callback)
+        #else
             let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
             weak var w = alert
             alert.addAction(UIAlertAction(title: cancelButtonTitle, style: .cancel, handler: { (action) in
@@ -270,9 +274,6 @@ extension UIAlertController {
                 self.maybePresent(presenter: presenter, viewControllerToPresent: alert, animated: true)
             }
             return alert
-        #else
-            // UIAlertViewが非推奨となったためか、遅延してボタンを有効にする処理が上手く動作しないので強制的に即時実行にする
-            return UIAlertView.lbk_show(withTitle: title, message: message, cancelButtonTitle: cancelButtonTitle, otherButtonTitles: otherButtonTitles, delayActiveTime: 0, callback: callback)
         #endif
     }
     
@@ -296,7 +297,18 @@ extension UIAlertController {
             }
         }
         
-        #if false
+        #if USE_UIALERTVIEW
+            let alert = UIAlertView.lbk_showTextInput(withTitle: title, message: message, cancelButtonTitle: cancelButtonTitle, otherButtonTitle: otherButtonTitle, text: text, placeholder: placeholder, secureTextEntry: secureTextEntry, keyboardType: keyboardType, limitation: limitation, callback: { (sender, buttonIndex, text) in
+                // UIAlertViewの場合は変換中のままOKしてしまうと文字数制限がうまく利かないみたいなので、確定した文字テキストに対して文字数制限をかける
+                var validText = text
+                if nil != validText && Int(limitation) < validText!.characters.count {
+                    validText = (validText! as NSString).substring(to: Int(limitation))
+                }
+                callback?(sender, buttonIndex, validText)
+            })
+            _textField = (alert as AnyObject).textField
+            return alert
+        #else
             let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
             weak var w = alert
             alert.addAction(UIAlertAction(title: cancelButtonTitle, style: .cancel, handler: { (action) in
@@ -315,17 +327,6 @@ extension UIAlertController {
                 _textField = textField
             })
             self.maybePresent(presenter: presenter, viewControllerToPresent: alert, animated: true)
-            return alert
-        #else
-            let alert = UIAlertView.lbk_showTextInput(withTitle: title, message: message, cancelButtonTitle: cancelButtonTitle, otherButtonTitle: otherButtonTitle, text: text, placeholder: placeholder, secureTextEntry: secureTextEntry, keyboardType: keyboardType, limitation: limitation, callback: { (sender, buttonIndex, text) in
-                // UIAlertViewの場合は変換中のままOKしてしまうと文字数制限がうまく利かないみたいなので、確定した文字テキストに対して文字数制限をかける
-                var validText = text
-                if nil != validText && Int(limitation) < validText!.characters.count {
-                    validText = (validText! as NSString).substring(to: Int(limitation))
-                }
-                callback?(sender, buttonIndex, validText)
-            })
-            _textField = (alert as AnyObject).textField
             return alert
         #endif
     }

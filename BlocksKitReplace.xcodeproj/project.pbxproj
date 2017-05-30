@@ -394,6 +394,7 @@
 				DEVELOPMENT_TEAM = HTPD358RST;
 				INFOPLIST_FILE = BlocksKitReplace/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				OTHER_SWIFT_FLAGS = "-DUSE_UIALERTVIEW";
 				PRODUCT_BUNDLE_IDENTIFIER = mike.BlocksKitReplace;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "BlocksKitReplace/BlocksKitReplace-Bridging-Header.h";
@@ -411,6 +412,7 @@
 				DEVELOPMENT_TEAM = HTPD358RST;
 				INFOPLIST_FILE = BlocksKitReplace/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				OTHER_SWIFT_FLAGS = "-DUSE_UIALERTVIEW";
 				PRODUCT_BUNDLE_IDENTIFIER = mike.BlocksKitReplace;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "BlocksKitReplace/BlocksKitReplace-Bridging-Header.h";
