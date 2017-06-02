@@ -8,6 +8,22 @@
 
 import UIKit
 
+/** テキスト入力中に文字数制限をするため、UITextFieldTextDidChangeNotificationで実現する
+ * ただし、extensionだと解除するタイミングが無いので、オブザーバーをオブジェクト化する
+ */
+public class TextFieldObserver {
+    private let observer: Any?
+    init(block: @escaping (Notification) -> Swift.Void) {
+        self.observer = NotificationCenter.default.addObserver(forName: NSNotification.Name.UITextFieldTextDidChange, object: nil, queue: nil) { (note) in
+            block(note)
+        }
+    }
+    deinit {
+        guard let observer = self.observer else { return }
+        NotificationCenter.default.removeObserver(observer)
+    }
+}
+
 #if USE_UIALERTVIEW
 /** 現行の実装ではUIAlertControllerを使っていると、スクリーンロック画面・画面配信受信画面で問題が発生するため、一時的にUIAlertViewで代用する。
  * 将来的にはUIAlertControllerへ移行するため、インターフェースは変えずにUIAlertViewを使う形にする
@@ -30,6 +46,7 @@ class UIAlertViewTextInputCallbackHolder {
         self.callback = callback
     }
 }
+var UIAlertViewTextFieldObserverKey: UInt8 = 0
 extension UIAlertView: UIAlertViewDelegate {
     
     /** メッセージを表示するだけのUIAlertView */
@@ -87,6 +104,15 @@ extension UIAlertView: UIAlertViewDelegate {
         return self.textField(at: 0)
     }
     
+    public var textFieldObserver: TextFieldObserver? {
+        get {
+            return objc_getAssociatedObject(self, &UIAlertViewTextFieldObserverKey) as? TextFieldObserver
+        }
+        set {
+            objc_setAssociatedObject(self, &UIAlertViewTextFieldObserverKey, newValue, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        }
+    }
+    
     //MARK:- Private Properties
     
     private var lbk_callback: UIAlertViewCallback? {
@@ -135,6 +161,7 @@ func toStrArray(str: String?) -> [String]? {
  * iOS8が非サポートだとUIAlertViewDelegateのalertViewShouldEnableFirstOtherButtonが呼ばれないみたいなので、キャンセルボタン以外を一時的に無効にしておく処理が実現できない。
  * 仮にalertViewShouldEnableFirstOtherButtonが呼ばれるようになったとしても、ボタンを有効に戻すために一度閉じて開き直す処理が効かない。
  */
+var UIAlertControllerTextFieldObserverKey: UInt8 = 0
 extension UIAlertController {
 
     #if USE_UIALERTVIEW
@@ -159,6 +186,15 @@ extension UIAlertController {
             else {
                 completion?()
             }
+        }
+    }
+    
+    private var textFieldObserver: TextFieldObserver? {
+        get {
+            return objc_getAssociatedObject(self, &UIAlertControllerTextFieldObserverKey) as? TextFieldObserver
+        }
+        set {
+            objc_setAssociatedObject(self, &UIAlertControllerTextFieldObserverKey, newValue, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         }
     }
     #endif
@@ -249,9 +285,9 @@ extension UIAlertController {
     /** テキスト入力UIAlertController */
     @discardableResult
     static func lbk_showTextInput(presenter: UIViewController?, title: String?, message: String?, cancelButtonTitle: String?, otherButtonTitle: String?, text: String?, placeholder: String?, secureTextEntry: Bool, keyboardType: UIKeyboardType, limitation: UInt, callback: ((_ sender: Any, _ buttonIndex: Int, _ text: String?) -> ())?) -> Any {
-        // UIAlertControllerでのテキスト入力中に文字数制限をするため、UITextFieldTextDidChangeNotificationで実現する
+        // テキスト入力中に文字数制限をするため、UITextFieldTextDidChangeNotificationで実現する
         weak var _textField: UITextField? = nil
-        NotificationCenter.default.addObserver(forName: NSNotification.Name.UITextFieldTextDidChange, object: nil, queue: nil) { (note) in
+        let observer = TextFieldObserver(block: { (note) in
             guard let obj = note.object else { return }
             if !(String(describing: type(of: obj)) as NSString).isEqual(to: "_UIAlertControllerTextField") { return }
             guard let textField = obj as? UITextField else { return }
@@ -265,10 +301,14 @@ extension UIAlertController {
             if Int(limitation) < text.characters.count {
                 textField.text = (text as NSString).substring(to: Int(limitation))
             }
-        }
+        })
         
         #if USE_UIALERTVIEW
             let alert = UIAlertView.lbk_showTextInput(withTitle: title, message: message, cancelButtonTitle: cancelButtonTitle, otherButtonTitle: otherButtonTitle, text: text, placeholder: placeholder, secureTextEntry: secureTextEntry, keyboardType: keyboardType, limitation: limitation, callback: { (sender, buttonIndex, text) in
+                if 0 == buttonIndex {
+                    callback?(sender, buttonIndex, nil)
+                    return
+                }
                 // UIAlertViewの場合は変換中のままOKしてしまうと文字数制限がうまく利かないみたいなので、確定した文字テキストに対して文字数制限をかける
                 if var validText = text {
                     if Int(limitation) < validText.characters.count {
@@ -280,7 +320,10 @@ extension UIAlertController {
                     callback?(sender, buttonIndex, nil)
                 }
             })
-            _textField = (alert as AnyObject).textField
+            if let a = alert as? UIAlertView {
+                _textField = a.textField
+                a.textFieldObserver = observer
+            }
             return alert
         #else
             let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
@@ -300,6 +343,9 @@ extension UIAlertController {
                 _textField = textField
             })
             self.maybePresent(presenter: presenter, viewControllerToPresent: alert, animated: true)
+            if let a = alert as? UIAlertController {
+                a.textFieldObserver = observer
+            }
             return alert
         #endif
     }
