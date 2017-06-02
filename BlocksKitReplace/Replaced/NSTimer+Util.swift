@@ -20,8 +20,8 @@ extension Timer {
     }
     
     static func lbk_executeBlockFromTimer(aTimer: Timer) {
-        let block = aTimer.userInfo as! ((Timer) -> ())?
-        block?(aTimer)
+        guard let block = aTimer.userInfo as? ((Timer) -> ()) else { return }
+        block(aTimer)
     }
     
 }

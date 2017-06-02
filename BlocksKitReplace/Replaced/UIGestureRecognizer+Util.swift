@@ -12,34 +12,24 @@ var UIGestureRecognizerHandlerKey: UInt8 = 0
 var UIGestureRecognizerHandlerDelayKey: UInt8 = 0
 var UIGestureRecognizerShouldHandleActionKey: UInt8 = 0
 typealias UIGestureRecognizerHandler = @convention(block) (_ sender: UIGestureRecognizer, _ state: UIGestureRecognizerState, _ location: CGPoint) -> ()
+class UIGestureRecognizerHandlerHolder {
+    let handler: UIGestureRecognizerHandler?
+    init(_ handler: UIGestureRecognizerHandler?) {
+        self.handler = handler
+    }
+}
 
 extension UIGestureRecognizer {
 
     private var lbk_handler: UIGestureRecognizerHandler? {
         get {
             if let object = objc_getAssociatedObject(self, &UIGestureRecognizerHandlerKey) {
-                #if swift(>=3.1)
-                    return unsafeBitCast(UnsafeRawPointer(Unmanaged<AnyObject>.passUnretained(object as AnyObject).toOpaque()), to: UIGestureRecognizerHandler.self)
-                #else
-                    return object as? UIGestureRecognizerHandler
-                #endif
+                return (object as? UIGestureRecognizerHandlerHolder)?.handler
             }
             return nil
         }
         set {
-            #if swift(>=3.1)
-                objc_setAssociatedObject(self, &UIGestureRecognizerHandlerKey, newValue, objc_AssociationPolicy.OBJC_ASSOCIATION_COPY_NONATOMIC)
-            #else
-                if nil == newValue {
-                    objc_setAssociatedObject(self, &UIGestureRecognizerHandlerKey, nil, objc_AssociationPolicy.OBJC_ASSOCIATION_COPY_NONATOMIC)
-                }
-                else {
-                    func setHandler(handler: @escaping UIGestureRecognizerHandler) {
-                        objc_setAssociatedObject(self, &UIGestureRecognizerHandlerKey, handler as! AnyObject, objc_AssociationPolicy.OBJC_ASSOCIATION_COPY_NONATOMIC)
-                    }
-                    setHandler(handler: newValue!)
-                }
-            #endif
+            objc_setAssociatedObject(self, &UIGestureRecognizerHandlerKey, UIGestureRecognizerHandlerHolder(newValue), objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         }
     }
     
@@ -80,7 +70,10 @@ extension UIGestureRecognizer {
     private var lbk_handlerDelay: TimeInterval {
         get {
             if let object = objc_getAssociatedObject(self, &UIGestureRecognizerHandlerDelayKey) {
-                return (object as! NSNumber).doubleValue
+                if let number = object as? NSNumber {
+                    return number.doubleValue
+                }
+                return 0
             }
             return 0
         }

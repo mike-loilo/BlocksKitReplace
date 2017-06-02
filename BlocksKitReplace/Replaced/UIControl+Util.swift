@@ -11,34 +11,24 @@ import UIKit
 var UIControlHandlerKey: UInt8 = 0
 var UIControlControlEventKey: UInt8 = 0
 typealias UIControlHandler = @convention(block) (_ sender: AnyObject) -> ()
+class UIControlHandlerHolder {
+    let handler: UIControlHandler?
+    init(_ handler: UIControlHandler?) {
+        self.handler = handler
+    }
+}
 
 extension UIControl {
 
     private var lbk_handler: UIControlHandler? {
         get {
             if let object = objc_getAssociatedObject(self, &UIControlHandlerKey) {
-                #if swift(>=3.1)
-                    return unsafeBitCast(UnsafeRawPointer(Unmanaged<AnyObject>.passUnretained(object as AnyObject).toOpaque()), to: UIControlHandler.self)
-                #else
-                    return object as? UIControlHandler
-                #endif
+                return (object as? UIControlHandlerHolder)?.handler
             }
             return nil
         }
         set {
-            #if swift(>=3.1)
-                objc_setAssociatedObject(self, &UIControlHandlerKey, newValue, objc_AssociationPolicy.OBJC_ASSOCIATION_COPY_NONATOMIC)
-            #else
-                if nil == newValue {
-                    objc_setAssociatedObject(self, &UIControlHandlerKey, nil, objc_AssociationPolicy.OBJC_ASSOCIATION_COPY_NONATOMIC)
-                }
-                else {
-                    func setHandler(handler: @escaping UIControlHandler) {
-                        objc_setAssociatedObject(self, &UIControlHandlerKey, handler as! AnyObject, objc_AssociationPolicy.OBJC_ASSOCIATION_COPY_NONATOMIC)
-                    }
-                    setHandler(handler: newValue!)
-                }
-            #endif
+            objc_setAssociatedObject(self, &UIControlHandlerKey, UIControlHandlerHolder(newValue), objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         }
     }
     

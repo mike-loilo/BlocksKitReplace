@@ -17,7 +17,19 @@ var UIAlertViewDisableFirstOtherButtonKey: UInt8 = 0
 var UIAlertViewCallbackKey: UInt8 = 0
 var UIAlertViewTextInputCallbackKey: UInt8 = 0
 typealias UIAlertViewCallback = @convention(block) (_ sender: Any, _ buttonIndex: Int) -> ()
+class UIAlertViewCallbackHolder {
+    let callback: UIAlertViewCallback?
+    init(_ callback: UIAlertViewCallback?) {
+        self.callback = callback
+    }
+}
 typealias UIAlertViewTextInputCallback = @convention(block) (_ sender: Any, _ buttonIndex: Int, _ text: String?) -> ()
+class UIAlertViewTextInputCallbackHolder {
+    let callback: UIAlertViewTextInputCallback?
+    init(_ callback: UIAlertViewTextInputCallback?) {
+        self.callback = callback
+    }
+}
 extension UIAlertView: UIAlertViewDelegate {
     
     /** メッセージを表示するだけのUIAlertView */
@@ -25,7 +37,7 @@ extension UIAlertView: UIAlertViewDelegate {
     static func lbk_show(withTitle: String?, message: String?, buttonTitle: String?, callback: (() -> ())?) -> Any {
         let alert = UIAlertView(title: withTitle, message: message, delegate: nil, cancelButtonTitle: buttonTitle)
         alert.lbk_callback = { (sender, buttonIndex) in
-            if nil != callback { callback!() }
+            callback?()
         }
         alert.delegate = alert
         alert.show()
@@ -34,19 +46,23 @@ extension UIAlertView: UIAlertViewDelegate {
     
     /** otherButtonを一定時間後に有効にするUIAlertView */
     @discardableResult
-    static func lbk_show(withTitle: String?, message: String?, cancelButtonTitle: String?, otherButtonTitles: [String]?, delayActiveTime: TimeInterval, callback: ((_ sender: Any, _ buttonIndex: Int) -> ())?) -> Any {
-        return UIAlertView(title: withTitle, message: message, cancelButtonTitle: cancelButtonTitle, otherButtonTitles: otherButtonTitles, delayActiveTime: delayActiveTime, callback: callback)
+    static func lbk_show(withTitle: String?, message: String?, cancelButtonTitle: String?, otherButtonTitles: [String]?, callback: ((_ sender: Any, _ buttonIndex: Int) -> ())?) -> Any {
+        return UIAlertView(title: withTitle, message: message, cancelButtonTitle: cancelButtonTitle, otherButtonTitles: otherButtonTitles, callback: callback)
     }
     
     /** テキスト入力UIAlertView */
     @discardableResult
     static func lbk_showTextInput(withTitle: String?, message: String?, cancelButtonTitle: String?, otherButtonTitle: String?, text: String?, placeholder: String?, secureTextEntry: Bool, keyboardType: UIKeyboardType, limitation: UInt, callback: ((_ sender: Any, _ buttonIndex: Int, _ text: String?) -> ())?) -> Any {
-        let alert = UIAlertView(title: nil != withTitle ? withTitle! : "", message: nil != message ? message! : "", delegate: nil, cancelButtonTitle: cancelButtonTitle, otherButtonTitles: nil != otherButtonTitle ? otherButtonTitle! : "")
+        func nnStr(str: String?) -> String {
+            guard let s = str else { return "" }
+            return s
+        }
+        let alert = UIAlertView(title: nnStr(str: withTitle), message: nnStr(str: message), delegate: nil, cancelButtonTitle: cancelButtonTitle, otherButtonTitles: nnStr(str: otherButtonTitle))
         alert.alertViewStyle = secureTextEntry ? .secureTextInput : .plainTextInput
-        if nil != alert.textField {
-            alert.textField!.text = text
-            alert.textField!.placeholder = placeholder
-            alert.textField!.keyboardType = keyboardType
+        if let textField = alert.textField {
+            textField.text = text
+            textField.placeholder = placeholder
+            textField.keyboardType = keyboardType
         }
         alert.lbk_textInputCallback = callback
         alert.delegate = alert
@@ -54,26 +70,17 @@ extension UIAlertView: UIAlertViewDelegate {
         return alert
     }
     
-    private convenience init(title: String?, message: String?, cancelButtonTitle: String?, otherButtonTitles: [String]?, delayActiveTime: TimeInterval, callback: ((_ sender: Any, _ buttonIndex: Int) -> ())?) {
+    private convenience init(title: String?, message: String?, cancelButtonTitle: String?, otherButtonTitles: [String]?, callback: ((_ sender: Any, _ buttonIndex: Int) -> ())?) {
         self.init(title: title, message: message, delegate: nil, cancelButtonTitle: cancelButtonTitle)
-        if nil != otherButtonTitles {
-            for otherButtonTitle in otherButtonTitles! {
+        if let others = otherButtonTitles {
+            for otherButtonTitle in others {
                 self.addButton(withTitle: otherButtonTitle)
             }
         }
-        self.lbk_disableFirstOtherButton = 0 < delayActiveTime
         self.lbk_callback = callback
         self.delegate = self
         self.show()
-        if 0 < delayActiveTime {
-            weak var w = self
-            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + Double(Int64(delayActiveTime * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC), execute: {
-                guard let strong = w else { return }
-                strong.dismiss(withClickedButtonIndex: 0, animated: false)
-                strong.lbk_disableFirstOtherButton = false
-                strong.show()
-            })
-        }
+        // UIAlertViewが非推奨となったためか、遅延してボタンを有効にする処理が上手く動作しないので、無駄な実装は削除しておく
     }
     
     public var textField: UITextField? {
@@ -82,68 +89,27 @@ extension UIAlertView: UIAlertViewDelegate {
     
     //MARK:- Private Properties
     
-    private var lbk_disableFirstOtherButton: Bool {
-        get {
-            return objc_getAssociatedObject(self, &UIAlertViewDisableFirstOtherButtonKey) as? Bool ?? false
-        }
-        set {
-            objc_setAssociatedObject(self, &UIAlertViewDisableFirstOtherButtonKey, newValue, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-        }
-    }
-    
     private var lbk_callback: UIAlertViewCallback? {
         get {
             if let object = objc_getAssociatedObject(self, &UIAlertViewCallbackKey) {
-                #if swift(>=3.1)
-                    return unsafeBitCast(UnsafeRawPointer(Unmanaged<AnyObject>.passUnretained(object as AnyObject).toOpaque()), to: UIAlertViewCallback.self)
-                #else
-                    return object as? UIBarButtonItemHandler
-                #endif
+                return (object as? UIAlertViewCallbackHolder)?.callback
             }
             return nil
         }
         set {
-            #if swift(>=3.1)
-                objc_setAssociatedObject(self, &UIAlertViewCallbackKey, newValue, objc_AssociationPolicy.OBJC_ASSOCIATION_COPY_NONATOMIC)
-            #else
-                if nil == newValue {
-                    objc_setAssociatedObject(self, &UIAlertViewCallbackKey, nil, objc_AssociationPolicy.OBJC_ASSOCIATION_COPY_NONATOMIC)
-                }
-                else {
-                    func setHandler(handler: @escaping UIAlertViewCallback) {
-                        objc_setAssociatedObject(self, &UIAlertViewCallbackKey, handler as! AnyObject, objc_AssociationPolicy.OBJC_ASSOCIATION_COPY_NONATOMIC)
-                    }
-                    setHandler(handler: newValue!)
-                }
-            #endif
+            objc_setAssociatedObject(self, &UIAlertViewCallbackKey, UIAlertViewCallbackHolder(newValue), objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         }
     }
     
     private var lbk_textInputCallback: UIAlertViewTextInputCallback? {
         get {
             if let object = objc_getAssociatedObject(self, &UIAlertViewTextInputCallbackKey) {
-                #if swift(>=3.1)
-                    return unsafeBitCast(UnsafeRawPointer(Unmanaged<AnyObject>.passUnretained(object as AnyObject).toOpaque()), to: UIAlertViewTextInputCallback.self)
-                #else
-                    return object as? UIBarButtonItemHandler
-                #endif
+                return (object as? UIAlertViewTextInputCallbackHolder)?.callback
             }
             return nil
         }
         set {
-            #if swift(>=3.1)
-                objc_setAssociatedObject(self, &UIAlertViewTextInputCallbackKey, newValue, objc_AssociationPolicy.OBJC_ASSOCIATION_COPY_NONATOMIC)
-            #else
-                if nil == newValue {
-                    objc_setAssociatedObject(self, &UIAlertViewTextInputCallbackKey, nil, objc_AssociationPolicy.OBJC_ASSOCIATION_COPY_NONATOMIC)
-                }
-                else {
-                    func setHandler(handler: @escaping UIAlertViewTextInputCallback) {
-                        objc_setAssociatedObject(self, &UIAlertViewTextInputCallbackKey, handler as! AnyObject, objc_AssociationPolicy.OBJC_ASSOCIATION_COPY_NONATOMIC)
-                    }
-                    setHandler(handler: newValue!)
-                }
-            #endif
+            objc_setAssociatedObject(self, &UIAlertViewTextInputCallbackKey, UIAlertViewTextInputCallbackHolder(newValue), objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         }
     }
     
@@ -151,14 +117,15 @@ extension UIAlertView: UIAlertViewDelegate {
     
     public func alertView(_ alertView: UIAlertView, clickedButtonAt buttonIndex: Int) {
         alertView.lbk_callback?(alertView, buttonIndex)
-        alertView.lbk_textInputCallback?(alertView, buttonIndex, nil != alertView.textField ? alertView.textField!.text : nil)
-    }
-    
-    public func alertViewShouldEnableFirstOtherButton(_ alertView: UIAlertView) -> Bool {
-        return !alertView.lbk_disableFirstOtherButton
+        alertView.lbk_textInputCallback?(alertView, buttonIndex, alertView.textField?.text)
     }
 }
 #endif
+
+func toStrArray(str: String?) -> [String]? {
+    guard let s = str else { return nil }
+    return [s]
+}
 
 /** 元々、UIAlertViewを拡張して、UIAlertControllerを扱えるようにしていたが、
  * iOS8を非サポートにすると、ボタンの有効化を遅延させるときにうまくいかない
@@ -174,16 +141,20 @@ extension UIAlertController {
     #else
     /** presenterがnilの場合は最前面のUIViewControllerを探して表示を試みる */
     private class func maybePresent(presenter: UIViewController?, viewControllerToPresent: UIViewController, animated: Bool, completion: (() -> Swift.Void)? = nil) {
-        if nil != presenter {
-            presenter!.present(viewControllerToPresent, animated: animated, completion: completion)
+        if let p = presenter {
+            p.present(viewControllerToPresent, animated: animated, completion: completion)
         }
         else {
             var presenter = UIApplication.shared.keyWindow?.rootViewController
-            while nil != presenter && nil != presenter!.presentedViewController && false == presenter!.presentedViewController!.isBeingDismissed {
-                presenter = presenter!.presentedViewController!
+            while true {
+                guard let p = presenter else { break }
+                guard let presented = p.presentedViewController else { break }
+                if !presented.isBeingDismissed {
+                    presenter = presented
+                }
             }
-            if nil != presenter {
-                presenter!.present(viewControllerToPresent, animated: animated, completion: completion)
+            if let p = presenter {
+                p.present(viewControllerToPresent, animated: animated, completion: completion)
             }
             else {
                 completion?()
@@ -215,7 +186,7 @@ extension UIAlertController {
     /** cancel/other2つボタンのUIAlertController */
     @discardableResult
     static func lbk_show(presenter: UIViewController?, title: String?, message: String?, cancelButtonTitle: String?, otherButtonTitle: String?, callback: ((_ sender: Any, _ buttonIndex: Int) -> ())?) -> Any {
-        return self.lbk_show(presenter: presenter, title: title, message: message, cancelButtonTitle: cancelButtonTitle, otherButtonTitles: nil != otherButtonTitle ? [otherButtonTitle!] : nil, delayActiveTime: 0, callback: callback)
+        return self.lbk_show(presenter: presenter, title: title, message: message, cancelButtonTitle: cancelButtonTitle, otherButtonTitles: toStrArray(str: otherButtonTitle), delayActiveTime: 0, callback: callback)
     }
     /** cancelボタン、複数のotherボタンのUIAlertController */
     @discardableResult
@@ -226,32 +197,31 @@ extension UIAlertController {
     /** otherボタンを一定時間後に有効にするUIAlertController */
     @discardableResult
     static func lbk_show(presenter: UIViewController?, title: String?, message: String?, cancelButtonTitle: String?, otherButtonTitle: String?, delayActiveTime: TimeInterval, callback: ((_ sender: Any, _ buttonIndex: Int) -> ())?) -> Any {
-        return self.lbk_show(presenter: presenter, title: title, message: message, cancelButtonTitle: cancelButtonTitle, otherButtonTitles: nil != otherButtonTitle ? [otherButtonTitle!] : nil, delayActiveTime: delayActiveTime, callback: callback)
+        return self.lbk_show(presenter: presenter, title: title, message: message, cancelButtonTitle: cancelButtonTitle, otherButtonTitles: toStrArray(str: otherButtonTitle), delayActiveTime: delayActiveTime, callback: callback)
     }
     /** 複数のotherボタンを一定時間後に有効にするUIAlertController */
     @discardableResult
     static func lbk_show(presenter: UIViewController?, title: String?, message: String?, cancelButtonTitle: String?, otherButtonTitles: [String]?, delayActiveTime: TimeInterval, callback: ((_ sender: Any, _ buttonIndex: Int) -> Void)?) -> Any {
         #if USE_UIALERTVIEW
-            // UIAlertViewが非推奨となったためか、遅延してボタンを有効にする処理が上手く動作しないので強制的に即時実行にする
-            return UIAlertView.lbk_show(withTitle: title, message: message, cancelButtonTitle: cancelButtonTitle, otherButtonTitles: otherButtonTitles, delayActiveTime: 0, callback: callback)
+            return UIAlertView.lbk_show(withTitle: title, message: message, cancelButtonTitle: cancelButtonTitle, otherButtonTitles: otherButtonTitles, callback: callback)
         #else
             let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-            weak var w = alert
-            alert.addAction(UIAlertAction(title: cancelButtonTitle, style: .cancel, handler: { (action) in
+            alert.addAction(UIAlertAction(title: cancelButtonTitle, style: .cancel, handler: { [weak w = alert] (action) in
                 guard let strong = w else { return }
                 callback?(strong, 0)
             }))
             var loginActions: [UIAlertAction] = []
-            if nil != otherButtonTitles {
-                for otherButtonTitle in otherButtonTitles! {
-                    let index = otherButtonTitles!.index(of: otherButtonTitle)!
+            if let others = otherButtonTitles {
+                for otherButtonTitle in others {
+                    let index = others.index(of: otherButtonTitle)
                     var style = UIAlertActionStyle.default
                     if #available(iOS 9, *) {
-                        style = 0 < delayActiveTime && 1 == otherButtonTitles!.count ? .destructive : .default
+                        style = 0 < delayActiveTime && 1 == others.count ? .destructive : .default
                     }
-                    let loginAction = UIAlertAction(title: otherButtonTitle, style: style, handler: { (action) in
+                    let loginAction = UIAlertAction(title: otherButtonTitle, style: style, handler: { [weak w = alert] (action) in
                         guard let strong = w else { return }
-                        callback?(strong, index + 1)
+                        guard let idx = index else { return }
+                        callback?(strong, idx + 1)
                     })
                     alert.addAction(loginAction)
                     loginActions.append(loginAction)
@@ -262,8 +232,7 @@ extension UIAlertController {
                     loginAction.isEnabled = false
                 }
                 self.maybePresent(presenter: presenter, viewControllerToPresent: alert, animated: true, completion: {
-                    DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + Double(Int64(delayActiveTime * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC), execute: {
-                        if nil == w { return }
+                    DispatchQueue.main.asyncAfter(deadline: .now() + delayActiveTime, execute: {
                         for loginAction in loginActions {
                             loginAction.isEnabled = true
                         }
@@ -283,39 +252,43 @@ extension UIAlertController {
         // UIAlertControllerでのテキスト入力中に文字数制限をするため、UITextFieldTextDidChangeNotificationで実現する
         weak var _textField: UITextField? = nil
         NotificationCenter.default.addObserver(forName: NSNotification.Name.UITextFieldTextDidChange, object: nil, queue: nil) { (note) in
-            if nil == note.object { return }
-            if !(String(describing: type(of: note.object!)) as NSString).isEqual(to: "_UIAlertControllerTextField") { return }
-            let textField = note.object as! UITextField
+            guard let obj = note.object else { return }
+            if !(String(describing: type(of: obj)) as NSString).isEqual(to: "_UIAlertControllerTextField") { return }
+            guard let textField = obj as? UITextField else { return }
             if textField != _textField { return }
             if 0 == limitation { return }
             
             // 変換中は無視
             if nil != textField.markedTextRange { return }
-            
-            if nil != textField.text && Int(limitation) < textField.text!.characters.count {
-                textField.text = (textField.text! as NSString).substring(to: Int(limitation))
+
+            guard let text = textField.text else { return }
+            if Int(limitation) < text.characters.count {
+                textField.text = (text as NSString).substring(to: Int(limitation))
             }
         }
         
         #if USE_UIALERTVIEW
             let alert = UIAlertView.lbk_showTextInput(withTitle: title, message: message, cancelButtonTitle: cancelButtonTitle, otherButtonTitle: otherButtonTitle, text: text, placeholder: placeholder, secureTextEntry: secureTextEntry, keyboardType: keyboardType, limitation: limitation, callback: { (sender, buttonIndex, text) in
                 // UIAlertViewの場合は変換中のままOKしてしまうと文字数制限がうまく利かないみたいなので、確定した文字テキストに対して文字数制限をかける
-                var validText = text
-                if nil != validText && Int(limitation) < validText!.characters.count {
-                    validText = (validText! as NSString).substring(to: Int(limitation))
+                if var validText = text {
+                    if Int(limitation) < validText.characters.count {
+                        validText = (validText as NSString).substring(to: Int(limitation))
+                    }
+                    callback?(sender, buttonIndex, validText)
                 }
-                callback?(sender, buttonIndex, validText)
+                else {
+                    callback?(sender, buttonIndex, nil)
+                }
             })
             _textField = (alert as AnyObject).textField
             return alert
         #else
             let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-            weak var w = alert
-            alert.addAction(UIAlertAction(title: cancelButtonTitle, style: .cancel, handler: { (action) in
+            alert.addAction(UIAlertAction(title: cancelButtonTitle, style: .cancel, handler: { [weak w = alert] (action) in
                 guard let strong = w else { return }
                 callback?(strong, 0, nil)
             }))
-            alert.addAction(UIAlertAction(title: otherButtonTitle, style: .default, handler: { (action) in
+            alert.addAction(UIAlertAction(title: otherButtonTitle, style: .default, handler: { [weak w = alert] (action) in
                 guard let strong = w else { return }
                 callback?(strong, 1, strong.textField?.text)
             }))
