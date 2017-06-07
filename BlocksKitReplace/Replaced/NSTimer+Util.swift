@@ -16,7 +16,7 @@ extension Timer {
     }
     
     static func lbk_timer(timeInterval: TimeInterval, block: @escaping (Timer) -> (), repeats: Bool) -> Timer {
-        return Timer.init(timeInterval: timeInterval, target: self, selector: #selector(Timer.lbk_executeBlockFromTimer(aTimer:)), userInfo: block, repeats: repeats)
+        return Timer(timeInterval: timeInterval, target: self, selector: #selector(Timer.lbk_executeBlockFromTimer(aTimer:)), userInfo: block, repeats: repeats)
     }
     
     static func lbk_executeBlockFromTimer(aTimer: Timer) {

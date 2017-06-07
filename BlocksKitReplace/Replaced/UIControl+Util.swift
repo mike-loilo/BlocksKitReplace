@@ -10,7 +10,7 @@ import UIKit
 
 var UIControlHandlerKey: UInt8 = 0
 var UIControlControlEventKey: UInt8 = 0
-typealias UIControlHandler = @convention(block) (_ sender: AnyObject) -> ()
+typealias UIControlHandler = @convention(block) (_ sender: Any) -> ()
 class UIControlHandlerHolder {
     let handler: UIControlHandler?
     init(_ handler: UIControlHandler?) {
@@ -33,7 +33,7 @@ extension UIControl {
     }
     
     /** UIControl+BlocksKitのbk_addEventHandler:forControlEvents:とは異なり、複数のUIControlEventsに対して登録できないので注意 */
-    public func lbk_setEvent(handler: @escaping (AnyObject) -> (), forControlEvents: UIControlEvents) {
+    public func lbk_setEvent(handler: @escaping (Any) -> (), forControlEvents: UIControlEvents) {
         self.lbk_handler = handler
         self.addTarget(self, action: #selector(UIControl.lbk_handleAction(_:)), for: forControlEvents)
     }

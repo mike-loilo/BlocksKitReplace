@@ -33,7 +33,7 @@ extension UIGestureRecognizer {
         }
     }
     
-    static func lbk_recognizer(handler: ((UIGestureRecognizer, UIGestureRecognizerState, CGPoint) -> ())?, delay: TimeInterval) -> AnyObject {
+    static func lbk_recognizer(handler: ((UIGestureRecognizer, UIGestureRecognizerState, CGPoint) -> ())?, delay: TimeInterval) -> Any {
         let recognizer = self.init()
         recognizer.addTarget(recognizer, action: #selector(UIGestureRecognizer.lbk_handleAction(_:)))
         recognizer.lbk_handler = handler
@@ -41,7 +41,7 @@ extension UIGestureRecognizer {
         return recognizer
     }
     
-    static func lbk_recognizer(handler: ((UIGestureRecognizer, UIGestureRecognizerState, CGPoint) -> ())?) -> AnyObject {
+    static func lbk_recognizer(handler: ((UIGestureRecognizer, UIGestureRecognizerState, CGPoint) -> ())?) -> Any {
         let recognizer = self.init()
         recognizer.addTarget(recognizer, action: #selector(UIGestureRecognizer.lbk_handleAction(_:)))
         recognizer.lbk_handler = handler
@@ -64,14 +64,14 @@ extension UIGestureRecognizer {
             return
         }
         
-        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + Double(Int64(delay * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC), execute: block)
+        DispatchQueue.main.asyncAfter(deadline: .now() + delay, execute: block)
     }
 
     private var lbk_handlerDelay: TimeInterval {
         get {
             if let object = objc_getAssociatedObject(self, &UIGestureRecognizerHandlerDelayKey) {
-                if let number = object as? NSNumber {
-                    return number.doubleValue
+                if let delay = object as? Double {
+                    return delay
                 }
                 return 0
             }

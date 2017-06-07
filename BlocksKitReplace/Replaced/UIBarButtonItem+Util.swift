@@ -59,7 +59,7 @@ extension UIBarButtonItem {
         return item
     }
     
-    func lbk_tapAction(_ sender: AnyObject) {
+    func lbk_tapAction(_ sender: Any) {
         self.lbk_handler?(self)
     }
 }
