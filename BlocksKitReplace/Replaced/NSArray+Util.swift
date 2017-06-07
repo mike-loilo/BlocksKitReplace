@@ -35,14 +35,14 @@ extension NSArray {
     public func lbk_map(block: (Any) -> (Any?)) -> [Any] {
         var result = [Any]()
         result.reserveCapacity(self.count)
-        self.enumerateObjects({ (obj, idx, stop) in
+        for obj in self {
             if let value = block(obj) {
                 result.append(value)
             }
             else {
                 result.append(NSNull())
             }
-        })
+        }
         return result
     }
     
